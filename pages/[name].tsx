@@ -5,15 +5,25 @@ import { GetStaticPropsResult, GetStaticProps, GetServerSideProps } from "next"
 import styles from '../styles/Room.module.scss'
 import { connectToDatabase } from '../utils/mongodb'
 import axios from "axios";
-import { SyntheticEvent, useRef } from 'react'
+import {uuidv4} from "../utils/modeling";
+import { SyntheticEvent, useRef, useState } from 'react'
 
 export default function Room({name}:{name:string}) {
   const formRef = useRef(null);
+  const [imagesInput,setImagesInput] = useState(null);
 
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
-    const response = await axios.post("/api/images/"+name+"/");
-
+    const formData = new FormData();
+    const files:File[] = event.target.images.files;
+    for(const file of files){
+      // const fileObj = URL.createObjectURL(file);
+      formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
+        type: file.type,
+      }));
+    }
+    const response = await axios.post("/api/image/"+name+"/",
+     formData);
   }
 
   return (
@@ -25,7 +35,7 @@ export default function Room({name}:{name:string}) {
         onSubmit={(e:SyntheticEvent)=>{
             handleSubmit(e);
         }}>
-          <input name="image" type="file"/>
+          <input id="images" name="image" type="file" multiple/>
           <button type="submit">submit</button>
         </form>
     </div>

@@ -12,7 +12,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
         data:_.body,
         date:new Date()
       }
-      console.log(newImage)
+      console.log(newImage);
       res.status(200).json(newImage);
       break;
     case "GET":
