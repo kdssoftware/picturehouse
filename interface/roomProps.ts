@@ -1,3 +1,4 @@
 export default interface roomProps{
-    name:string
+    name:string,
+    password?:string
 }

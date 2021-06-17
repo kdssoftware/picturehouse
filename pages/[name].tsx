@@ -4,13 +4,30 @@ import RoomProps from '../interface/roomProps'
 import { GetStaticPropsResult, GetStaticProps, GetServerSideProps } from "next"
 import styles from '../styles/Room.module.scss'
 import { connectToDatabase } from '../utils/mongodb'
+import axios from "axios";
+import { SyntheticEvent, useRef } from 'react'
 
-export default function Room({roomName}:{roomName:string}) {
+export default function Room({name}:{name:string}) {
+  const formRef = useRef(null);
+
+  const handleSubmit = async (event:SyntheticEvent) => {
+    event.preventDefault()
+    const response = await axios.post("/api/images/"+name+"/");
+
+  }
+
   return (
     <div className={styles.container}>
-        <h2>{roomName}</h2>
+        <h2>{name}</h2>
         <hr/>
-        <input type="file" multiple/>
+        <form 
+        ref={formRef}
+        onSubmit={(e:SyntheticEvent)=>{
+            handleSubmit(e);
+        }}>
+          <input name="image" type="file"/>
+          <button type="submit">submit</button>
+        </form>
     </div>
   )
 }

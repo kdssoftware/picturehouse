@@ -48,3 +48,15 @@ export async function connectToDatabase() {
   cached.conn = await cached.promise
   return cached.conn
 }
+
+export async function images_page(room:string,page_size:number,page_num:number){
+  if(page_size<=0){
+    return [];
+  }else{
+    const skips = page_size * (page_num-1)
+    const {db} = await connectToDatabase();
+    const images =  await db.collection("images");
+    const cursor = await images.find({room:room}).skip(skips).limit(page_size);
+    return await cursor.map((x:any)=>x);
+  }
+}
