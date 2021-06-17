@@ -16,9 +16,8 @@ export default function Room({name}:{name:string}) {
     event.preventDefault()
     const formData = new FormData();
     const files:File[] = event.target.images.files;
-    for(const file of files){
-      // const fileObj = URL.createObjectURL(file);
-      formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
+    for await (const file of files){
+      await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
       }));
     }

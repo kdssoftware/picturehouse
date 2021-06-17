@@ -56,7 +56,12 @@ export async function images_page(room:string,page_size:number,page_num:number){
     const skips = page_size * (page_num-1)
     const {db} = await connectToDatabase();
     const images =  await db.collection("images");
-    const cursor = await images.find({room:room}).skip(skips).limit(page_size);
-    return await cursor.map((x:any)=>x);
+    // console.log(room,skips,page_size);
+    const list = await images.aggregate([
+      { $match: {} },    // This is your query
+      { $skip: skips },   // Always apply 'skip' before 'limit'
+      { $limit: page_size }, // This is your 'page size'
+    ])
+    return list.toArray();
   }
 }
