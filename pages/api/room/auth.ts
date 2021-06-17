@@ -8,37 +8,23 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
   const rooms = await db.collection("rooms");
   switch(_.method){
     case "POST":
-      if(!_.query.room){
+      if(!_.body.room){
         res.status(404).send("Not found");
         return;
       }
-      const newRoom:Room = {
-        name:String(_.query.room),
-        locked:true,
-        password:_.body.password||generatePassword()
-      };
       try{
-        const f = await rooms.findOne({name:newRoom.name});
+        const f :Room = await rooms.findOne({name:_.body.room});
         if(f){
-          res.status(409).send("room already exist");
+            if(f.password===_.body.password?.trim()){
+                res.status(200).send("OK");
+            }else{
+                res.status(401).send("Wrong password");
+            }
         }else{
-        const r = await rooms.insertOne(newRoom)
-        res.status(201).json(r.ops[0]);
+            res.status(404).send("Room not found.");
         }
       }catch(e){
         res.status(500).send("Internal error");
-      }
-      break;
-    case "GET":
-      if(!_.query?.room){
-        res.status(404).send("Not found");
-        return;
-      }
-      const f = await rooms.findOne({name:_.query.room});
-      if(f){
-        res.status(200).json(f);
-      }else{
-        res.status(404).send("Not found");
       }
       break;
     default:

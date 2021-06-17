@@ -14,6 +14,7 @@ export default function Home() {
         <h2>Image gallery rooms</h2>
         <p>create a new Room
         </p>
+        {/* <input type="email" value="provide your email, for the room details"/> */}
         <input onChange={event => setRoom(event.target.value)} onKeyDown={async (event)=>{
           if(room.trim().length>=2){
             try{
