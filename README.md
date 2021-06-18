@@ -1,13 +1,15 @@
 # Image Gallery Rooms
 
 ## What is it?
-This will a free site where user can easly upload picture and share them around with friends.
+This will be a free site where user can easly upload pictures and share them around with people.
 
-It best use is in an event (wedding, birthday, bbq. ...) where are lots of people.
+Its best use is in an event (wedding, birthday, bbq. ...) where are lots of people take pictures of their own.
 
-Each person can get access to an already created room, with or without a password.
+This site can easly collect all pictures that everyone took during the event.
 
-Here all the pictures can be viewed of the event, can easly be added or downloaded.
+Each person can get access a room.
+
+There all the pictures of the event can be viewed, easily be added or downloaded.
 
 ## Limits and functionalities
 
@@ -33,5 +35,8 @@ Here all the pictures can be viewed of the event, can easly be added or download
 - [ ] remove room
 - [ ] view images in room
 - [ ] gallery scroll images in room
+- [ ] styling
 - [ ] sort images by date
 - [ ] download images as zip file
+- [ ] add googledrive to upload unlimited pictures (limited by your Google drive)
+- [ ] add one drive to upload unlimitied pictures (limited by your OneDrive)
