@@ -32,19 +32,23 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
   switch(_.method){
     case "POST":
       await multerAny(_, res);
+      //@ts-ignore
       if (!_?.files?.length) {
         res.statusCode = 400;
         res.end();
         return;
       }else{
+        //@ts-ignore
         const blobs: BlobCorrected[] = _.files;
         const imagesData:Image[] = blobs.map((blob:BlobCorrected)=>{
           return { 
+            //@ts-ignore
             buffer:blob.buffer,
             date:new Date(),
             encoding:blob.encoding,
             name:uuidv4(),
             room:room.name,
+            //@ts-ignore
             mimetype:blob.mimetype
           }
         });
