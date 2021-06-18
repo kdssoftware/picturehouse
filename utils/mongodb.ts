@@ -4,13 +4,13 @@ const MONGODB_DB = process.env.MONGODB_DB
 
 if (!MONGODB_URI) {
   throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
+    'Please define the MONGODB_URI environment variable inside .env.local or .env'
   )
 }
 
 if (!MONGODB_DB) {
   throw new Error(
-    'Please define the MONGODB_DB environment variable inside .env.local'
+    'Please define the MONGODB_DB environment variable inside .env.local or .env'
   )
 }
 
@@ -38,7 +38,18 @@ export async function connectToDatabase() {
       useUnifiedTopology: true,
     }
     //@ts-ignore
+  try{
+    //@ts-ignore
     cached.promise = MongoClient.connect(MONGODB_URI, opts).then((client) => {
+      return {
+        client,
+        db: client.db(MONGODB_DB),
+      }
+    })
+  }catch(e){
+    console.log("MONGODB_URI connection error, trying MONGODB_URI_BACKUP");
+    //@ts-ignore
+    cached.promise = MongoClient.connect(MONGODB_URI_BACKUP, opts).then((client) => {
       return {
         client,
         db: client.db(MONGODB_DB),
@@ -48,8 +59,9 @@ export async function connectToDatabase() {
   cached.conn = await cached.promise
   return cached.conn
 }
+}
 
-export async function images_page(room:string,page_size:number,page_num:number){
+export const images_page = async (room:string,page_size:number,page_num:number) => {
   if(page_size<=0){
     return [];
   }else{

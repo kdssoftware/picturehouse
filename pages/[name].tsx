@@ -16,7 +16,7 @@ export default function Room({room}:{room:RoomProps}) {
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData();
-    
+    //@ts-ignore
     const files:File[] = event.target.images.files;
     for await (const file of files){
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
@@ -31,6 +31,7 @@ export default function Room({room}:{room:RoomProps}) {
     event.preventDefault();
     try{
       await axios.post("/api/room/auth",{
+        //@ts-ignore
         password:event.target.password.value,
         room:room.name
       })
@@ -93,7 +94,7 @@ export const getStaticProps: GetStaticProps = async ({ params}) => {
     props: {
       room:{
         name:room.name,
-        locked:room.locked
+        locked:room?.locked||false
       }
     },
     revalidate:1
