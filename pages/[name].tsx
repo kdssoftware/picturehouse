@@ -6,17 +6,23 @@ import { GetStaticPropsResult, GetStaticProps, GetServerSideProps } from "next"
 import Style from '../styles/Room.module.scss'
 import { connectToDatabase } from '../utils/mongodb'
 import axios from "axios";
+import { useInView } from 'react-intersection-observer';
 import {uuidv4} from "../utils/modeling";
 import { SyntheticEvent, useRef, useState } from 'react'
 
 export default function Room({room}:{room:RoomProps}) {
   const formRef = useRef(null);
+  const [ref, isAtEnd] = useInView({
+    threshold: 0,
+  })
   const [imagesInput,setImagesInput] = useState(null);
-  const [isLocked,setLocked]= useState<boolean>(room.locked);
+  const [isWaitForNextLoad,setIsWaitForNextLoad] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [pictures,setPictures] = useState<Array<Picture>>([]);
+  const [isLocked,setLocked]= useState<boolean>(room.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
   const [page,setPage] = useState(1);
-  const defaultSizeToLoadPictures = 20;
+  const defaultSizeToLoadPictures = 1;
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData();
@@ -32,8 +38,10 @@ export default function Room({room}:{room:RoomProps}) {
   }
 
   const loadPictures = async () => {
+    setIsWaitForNextLoad(true);
     try{
       const response = await axios.get("/api/image/"+room.name+"?page="+page+"&size="+defaultSizeToLoadPictures);
+      setPage(page+1);
       const data = response?.data;
       if(data?.length!==0){
         setPictures([
@@ -42,7 +50,9 @@ export default function Room({room}:{room:RoomProps}) {
         ])
       }else{
         console.log("no more pictures to load");
+        setHasMore(false);
       }
+      setIsWaitForNextLoad(false);
     }catch(e){
       throw new Error(e);
     }
@@ -61,7 +71,7 @@ export default function Room({room}:{room:RoomProps}) {
       setPasswordStatus("Password was incorrect, please view the email is you are the one that created this room");
     }
   }
-
+  
   return (
     <>
       {
@@ -90,25 +100,31 @@ export default function Room({room}:{room:RoomProps}) {
               {
                 pictures.map(picture=>{
                   const image = new Image();
-                    image.onload = ()=>{
-                      console.log(image);
-                    };
-                    image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
+                  image.onload;
+                  image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
                   return(
-                  <div key={picture.name+picture.size}>
-                      <NextImage
+                  <div className={Style.pic} key={picture.name+picture.size}>
+                        <NextImage
                         src={image.src}
-                        width={image?.width}
-                        height={image?.height}
-                        layout="responsive"
-                      />
+                        width={image?.width*10}
+                        height={image?.height*10}
+                        />
                   </div>
-                )})
+                  )})
               }
             </div>
-            <button onClick={()=>{
-              loadPictures();
-            }}>Load</button>
+            <div id="ref" className={Style.ref} ref={ref}>
+                {
+                    (isAtEnd&&!isWaitForNextLoad&&hasMore)&&
+                        loadPictures()
+                }
+                {
+                    (isWaitForNextLoad&&hasMore)&&
+                    (
+                        "loading..."
+                    )
+                }
+            </div>
           </div>
         )
       }
