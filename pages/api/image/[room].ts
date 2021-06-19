@@ -41,14 +41,13 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
         //@ts-ignore
         const blobs: BlobCorrected[] = _.files;
         const imagesData:Image[] = blobs.map((blob:BlobCorrected)=>{
-          return { 
-            //@ts-ignore
+          return {
             buffer:blob.buffer,
             date:new Date(),
             encoding:blob.encoding,
             name:uuidv4(),
             room:room.name,
-            //@ts-ignore
+            size:blob.size,
             mimetype:blob.mimetype
           }
         });

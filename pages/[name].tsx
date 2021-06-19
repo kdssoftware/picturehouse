@@ -1,8 +1,9 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import NextImage from 'next/image'
+import Picture from "../interface/imageProps";
 import RoomProps from '../interface/roomProps'
 import { GetStaticPropsResult, GetStaticProps, GetServerSideProps } from "next"
-import styles from '../styles/Room.module.scss'
+import Style from '../styles/Room.module.scss'
 import { connectToDatabase } from '../utils/mongodb'
 import axios from "axios";
 import {uuidv4} from "../utils/modeling";
@@ -12,7 +13,10 @@ export default function Room({room}:{room:RoomProps}) {
   const formRef = useRef(null);
   const [imagesInput,setImagesInput] = useState(null);
   const [isLocked,setLocked]= useState<boolean>(room.locked);
+  const [pictures,setPictures] = useState<Array<Picture>>([]);
   const [passwordStatus,setPasswordStatus] = useState("");
+  const [page,setPage] = useState(1);
+  const defaultSizeToLoadPictures = 20;
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData();
@@ -25,6 +29,23 @@ export default function Room({room}:{room:RoomProps}) {
     }
     const response = await axios.post("/api/image/"+room.name+"/",
      formData);
+  }
+
+  const loadPictures = async () => {
+    try{
+      const response = await axios.get("/api/image/"+room.name+"?page="+page+"&size="+defaultSizeToLoadPictures);
+      const data = response?.data;
+      if(data?.length!==0){
+        setPictures([
+          ...pictures,
+          ...data
+        ])
+      }else{
+        console.log("no more pictures to load");
+      }
+    }catch(e){
+      throw new Error(e);
+    }
   }
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
@@ -54,7 +75,7 @@ export default function Room({room}:{room:RoomProps}) {
           <p>{passwordStatus}</p>
           </>
         ):(
-          <div className={styles.container}>
+          <div className={Style.container}>
             <h2>{room.name}</h2>
             <hr/>
             <form 
@@ -65,6 +86,29 @@ export default function Room({room}:{room:RoomProps}) {
               <input id="images" name="image" type="file" multiple/>
               <button type="submit">submit</button>
             </form>
+            <div className={Style.pictures}>
+              {
+                pictures.map(picture=>{
+                  const image = new Image();
+                    image.onload = ()=>{
+                      console.log(image);
+                    };
+                    image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
+                  return(
+                  <div key={picture.name+picture.size}>
+                      <NextImage
+                        src={image.src}
+                        width={image?.width}
+                        height={image?.height}
+                        layout="responsive"
+                      />
+                  </div>
+                )})
+              }
+            </div>
+            <button onClick={()=>{
+              loadPictures();
+            }}>Load</button>
           </div>
         )
       }
