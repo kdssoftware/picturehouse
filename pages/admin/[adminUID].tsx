@@ -10,7 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import {uuidv4} from "../../utils/modeling";
 import { SyntheticEvent, useRef, useState } from 'react'
 
-export default function Room({room}:{room:RoomProps}) {
+export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
   const [isLocked,setLocked]= useState<boolean>(room.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
@@ -74,7 +74,7 @@ export default function Room({room}:{room:RoomProps}) {
     </>
   )
 }
-
+//@ts-ignore
 Page.getInitialProps = async (ctx:any)=>{
   try{
     const res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
