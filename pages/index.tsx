@@ -27,6 +27,10 @@ export default function Home() {
       html: html, // html body
     })
   }
+  function validateEmail(mail:string){      
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(mail); 
+  } 
   return (
     <div className={styles.container}>
         <h2>Image gallery rooms</h2>
@@ -34,8 +38,8 @@ export default function Home() {
         </p>
         <label htmlFor="email">E-mail</label>
         <input id="e-mail" type="email" onChange={event => setMailInput(event.target.value)} placeholder="provide your email, for the room details" required/>
-        <label htmlFor="password">Password</label>
-        <input id="password" onChange={event => setRoom(event.target.value)} onKeyDown={async (event)=>{
+        <label htmlFor="room">Room</label>
+        <input id="room" onChange={event => setRoom(event.target.value)} onKeyDown={async (event)=>{
           if(room.trim().length>=2){
             try{
               await axios.get('/api/room/'+room);
@@ -44,11 +48,14 @@ export default function Home() {
               setRoomStatus("Room is available");
               if (event.key === 'Enter') {
                 try{
-                  setRoomStatus("Creating new room");
-                  
-                  const response = await axios.post('/api/room/'+room);
-                  await sendMail(room,response.data.password);
-                  setRoomStatus("Room created, check your e-mail");
+                  if(mailInput.trim.length!==6&&validateEmail(mailInput)){
+                    setRoomStatus("Creating new room");
+                    const response = await axios.post('/api/room/'+room);
+                    await sendMail(room,response.data.password);
+                    setRoomStatus("Room created, check your e-mail");
+                  }else{
+                    setRoomStatus("Email is not valid");
+                  }
                 }catch(e){
                   setRoomStatus("Something went wrong");
                 }
