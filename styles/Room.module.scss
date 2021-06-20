@@ -1,0 +1,19 @@
+.pictures{  
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+    justify-content: space-evenly;
+    .pic{
+        margin: 5px;
+        width: 32%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+.ref{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 50px;
+}

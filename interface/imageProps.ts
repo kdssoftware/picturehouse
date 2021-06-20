@@ -4,5 +4,7 @@ export default interface imageProps{
     mimetype:string,
     name:string,
     encoding:string,
-    room:string
+    room:string,
+    size:number,
+    _id?:string
 }
