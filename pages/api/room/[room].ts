@@ -39,7 +39,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
         name:String(_.query.room),
         locked:true,
         password:_.body.password||generatePassword(),
-        adminUID:uuidv4().replaceAll("-","")
+        adminUID:uuidv4().replace(/-/g,"")
       };
       try{
         const f = await rooms.findOne({name:newRoom.name});
@@ -56,7 +56,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
           html += "<b>Password:</b> "+newRoom.password;
           html += "</li>";
           html += "<li>";
-          html += "<b>Admin panel:</b> <a href='https://picturehouse.be/"+newRoom.name+"/admin/"+newRoom.adminUID+"'> https://picturehouse.be/admin/"+newRoom.adminUID+"</a>";
+          html += "<b>Admin panel:</b> <a href='https://picturehouse.be/admin/"+newRoom.adminUID+"'> https://picturehouse.be/admin/"+newRoom.adminUID+"</a>";
           html += "</li>";
           html += "</ul>";
           const mailOptions = {

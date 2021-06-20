@@ -76,11 +76,6 @@ export default function Page({room}:{room:RoomProps}) {
 }
 //@ts-ignore
 Page.getInitialProps = async (ctx:any)=>{
-  try{
-    const res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+    const res = await axios.get('http://localhost:3000/api/admin/'+ctx.query.adminUID);
     return {room:res.data};
-  }catch(e){
-    console.trace(e);
-    return {room:null}
-  }
 }
