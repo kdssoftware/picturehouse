@@ -75,32 +75,12 @@ export default function Room({room}:{room:RoomProps}) {
   )
 }
 
-export async function getStaticPaths() {
-  const { db } = await connectToDatabase();
-  const rooms = await db.collection("rooms").find({}).toArray();
-  const paths = rooms.map((r:RoomProps) => {
-    return {
-        params: { adminUID:r.adminUID },
-    }
-})
-  console.log(paths);
-  return {
-    paths,
-    fallback: false
-  }
-}
-
-export const getStaticProps: GetStaticProps = async ({ params}) => {
-  const { db } = await connectToDatabase();
-  const room:RoomProps = await db.collection("rooms").findOne({adminUID:params?.adminUID});
-  return {
-    props: {
-      room:{
-        adminUID:room.adminUID,
-        name:room.name,
-        locked:room?.locked||false
-      }
-    },
-    revalidate:1
+Page.getInitialProps = async (ctx:any)=>{
+  try{
+    const res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+    return {room:res.data};
+  }catch(e){
+    console.trace(e);
+    return {room:null}
   }
 }

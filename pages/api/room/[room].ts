@@ -56,7 +56,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
           html += "<b>Password:</b> "+newRoom.password;
           html += "</li>";
           html += "<li>";
-          html += "<b>Admin panel:</b> <a href='https://picturehouse.be/"+newRoom.name+"/admin/"+newRoom.adminUID+"'> https://picturehouse.be/"+newRoom.name+"/admin/"+newRoom.adminUID+"</a>";
+          html += "<b>Admin panel:</b> <a href='https://picturehouse.be/"+newRoom.name+"/admin/"+newRoom.adminUID+"'> https://picturehouse.be/admin/"+newRoom.adminUID+"</a>";
           html += "</li>";
           html += "</ul>";
           const mailOptions = {
@@ -79,6 +79,8 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       }
       const f = await rooms.findOne({name:_.query.room});
       if(f){
+        delete f.password;
+        delete f.adminUID;
         res.status(200).json(f);
       }else{
         res.status(404).send("Not found");

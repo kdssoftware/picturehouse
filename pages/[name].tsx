@@ -9,8 +9,9 @@ import axios from "axios";
 import { useInView } from 'react-intersection-observer';
 import {uuidv4} from "../utils/modeling";
 import { SyntheticEvent, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 
-export default function Room({room}:{room:RoomProps}) {
+export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
   const [ref, isAtEnd] = useInView({
     threshold: 0,
@@ -19,7 +20,7 @@ export default function Room({room}:{room:RoomProps}) {
   const [isWaitForNextLoad,setIsWaitForNextLoad] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [pictures,setPictures] = useState<Array<Picture>>([]);
-  const [isLocked,setLocked]= useState<boolean>(room.locked);
+  const [isLocked,setLocked]= useState<boolean>(room?.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
   const [page,setPage] = useState(1);
   const defaultSizeToLoadPictures = 12;
@@ -131,30 +132,13 @@ export default function Room({room}:{room:RoomProps}) {
   )
 }
 
-export async function getStaticPaths() {
-  const { db } = await connectToDatabase();
-  const rooms = await db.collection("rooms").find({}).toArray();
-  const paths = rooms.map((r:RoomProps) => {
-    return {
-        params: { name:r.name },
-    }
-})
-  return {
-    paths,
-    fallback: false
-  }
-}
 
-export const getStaticProps: GetStaticProps = async ({ params}) => {
-  const { db } = await connectToDatabase();
-  const room:RoomProps = await db.collection("rooms").findOne({name:params?.name});
-  return {
-    props: {
-      room:{
-        name:room.name,
-        locked:room?.locked||false
-      }
-    },
-    revalidate:1
+Page.getInitialProps = async (ctx:any)=>{
+  try{
+    const res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+    return {room:res.data};
+  }catch(e){
+    console.trace(e);
+    return {room:null}
   }
 }
