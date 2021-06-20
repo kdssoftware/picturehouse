@@ -26,11 +26,13 @@ export default function Home() {
         <label htmlFor="room">Room</label>
         <input id="room" onChange={event => setRoom(event.target.value.toLowerCase())} onKeyUp={async (event)=>{
           if(room.toLowerCase().trim().length>=3){
-            try{
-              await axios.get('/api/room/'+room.toLowerCase());
-              setRoomStatus("Room already exist");
-            }catch(e){
-              setRoomStatus("Room is available");
+            if(event.key!=="Enter"){
+              try{
+                await axios.get('/api/room/'+room.toLowerCase());
+                setRoomStatus("Room already exist");
+              }catch(e){
+                setRoomStatus("Room is available");
+              }
             }
           }else{
             setRoomStatus("Room should be at least 3 characters");
