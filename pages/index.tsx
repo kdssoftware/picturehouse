@@ -33,6 +33,7 @@ export default function Home() {
               }catch(e){
                 setRoomStatus("Room is available");
               }
+
             }
           }else{
             setRoomStatus("Room should be at least 3 characters");
