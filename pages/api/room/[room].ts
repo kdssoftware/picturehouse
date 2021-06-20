@@ -39,7 +39,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
         name:String(_.query.room),
         locked:true,
         password:_.body.password||generatePassword(),
-        adminUID:uuidv4().replaceAll("-","")
+        adminUID:uuidv4().replace(/-/g,"")
       };
       try{
         const f = await rooms.findOne({name:newRoom.name});
