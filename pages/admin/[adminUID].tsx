@@ -74,7 +74,7 @@ export default function Page({room}:{room:RoomProps}) {
     </>
   )
 }
-
+//@ts-ignore
 Page.getInitialProps = async (ctx:any)=>{
   try{
     const res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
