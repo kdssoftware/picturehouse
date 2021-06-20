@@ -10,7 +10,7 @@ import { useInView } from 'react-intersection-observer';
 import {uuidv4} from "../../utils/modeling";
 import { SyntheticEvent, useRef, useState } from 'react'
 
-export default function Page({room}:{room:RoomProps}) {
+export default function Room({room}:{room:RoomProps}) {
   const formRef = useRef(null);
   const [isLocked,setLocked]= useState<boolean>(room.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
