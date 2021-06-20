@@ -85,8 +85,6 @@ export default function Room({room}:{room:RoomProps}) {
           </>
         ):(
           <div className={Style.container}>
-            <h2>{room.name}</h2>
-            <hr/>
             <form 
             ref={formRef}
             onSubmit={(e:SyntheticEvent)=>{
