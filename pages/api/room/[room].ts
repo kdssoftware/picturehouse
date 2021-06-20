@@ -79,6 +79,8 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       }
       const f = await rooms.findOne({name:_.query.room});
       if(f){
+        delete f.password;
+        delete f.adminUID;
         res.status(200).json(f);
       }else{
         res.status(404).send("Not found");
