@@ -9,7 +9,8 @@ import axios from "axios";
 import { useInView } from 'react-intersection-observer';
 import {uuidv4} from "../utils/modeling";
 import { SyntheticEvent, useRef, useState } from 'react'
-import { useRouter } from 'next/router'
+import {  useRouter } from 'next/router'
+import ErrorPage from 'next/error'
 
 export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
@@ -75,6 +76,9 @@ export default function Page({room}:{room:RoomProps}) {
   return (
     <>
       {
+        room?
+        <>
+        {
         isLocked?(
           <>
           <h1>This room is locked</h1>
@@ -127,6 +131,12 @@ export default function Page({room}:{room:RoomProps}) {
           </div>
         )
       }
+        </>:(
+          <>
+          <h1>Room not found</h1>
+          </>
+        )
+      }
     </>
     
   )
@@ -134,11 +144,11 @@ export default function Page({room}:{room:RoomProps}) {
 
 //@ts-ignore
 Page.getInitialProps = async (ctx:any)=>{
+  let res;
   try{
-    const res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+    res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
     return {room:res.data};
   }catch(e){
-    console.trace(e);
     return {room:null}
   }
 }
