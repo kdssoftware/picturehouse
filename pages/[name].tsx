@@ -22,7 +22,7 @@ export default function Room({room}:{room:RoomProps}) {
   const [isLocked,setLocked]= useState<boolean>(room.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
   const [page,setPage] = useState(1);
-  const defaultSizeToLoadPictures = 1;
+  const defaultSizeToLoadPictures = 12;
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData();
@@ -33,8 +33,7 @@ export default function Room({room}:{room:RoomProps}) {
         type: file.type,
       }));
     }
-    const response = await axios.post("/api/image/"+room.name+"/",
-     formData);
+    const response = await axios.post("/api/image/"+room.name+"/",formData);
   }
 
   const loadPictures = async () => {
@@ -98,16 +97,17 @@ export default function Room({room}:{room:RoomProps}) {
             </form>
             <div className={Style.pictures}>
               {
-                pictures.map(picture=>{
+                pictures.map((picture,index)=>{
                   const image = new Image();
                   image.onload;
                   image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
+                  
                   return(
-                  <div className={Style.pic} key={picture.name+picture.size}>
+                  <div className={Style.pic} key={index}>
                         <NextImage
                         src={image.src}
-                        width={image?.width*10}
-                        height={image?.height*10}
+                        width={image.width*10}
+                        height={image.height*10}
                         />
                   </div>
                   )})
