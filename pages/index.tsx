@@ -10,23 +10,8 @@ export default function Home() {
   const [room, setRoom] = useState('')
   const [roomStatus,setRoomStatus] = useState('');
   const [mailInput,setMailInput] = useState('');
-  const sendMail = async(roomname:string,pass:string)=>{
-    let html = "<h1>Your room information at Picture House</h1>";
-    html += "<ul>";
-    html += "<li>";
-    html += "<b>Room name:</b> <a href='picturehouse.be/"+roomname+"'> https://picturehouse.be/"+roomname+"</a>";
-    html += "</li>";
-    html += "<li>";
-    html += "<b>Password:</b> "+pass;
-    html += "</li>";
-    html += "</ul>";
-    await axios.post("/api/mail",{
-      from: '"Picture House" <new-room@picturehouse.be>', // sender address
-      to:mailInput,
-      subject: "Your room information", // Subject line
-      html: html, // html body
-    })
-  }
+  const [gotoroomInput,setGotoroomInput] = useState('');
+  const [gotoroomStatus,setGotoroomStatus] = useState('');
   function validateEmail(mail:string){      
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailPattern.test(mail); 
@@ -39,33 +24,60 @@ export default function Home() {
         <label htmlFor="email">E-mail</label>
         <input id="e-mail" type="email" onChange={event => setMailInput(event.target.value)} placeholder="provide your email, for the room details" required/>
         <label htmlFor="room">Room</label>
-        <input id="room" onChange={event => setRoom(event.target.value)} onKeyDown={async (event)=>{
-          if(room.trim().length>=2){
+        <input id="room" onChange={event => setRoom(event.target.value.toLowerCase())} onKeyUp={async (event)=>{
+          if(room.toLowerCase().trim().length>=3){
             try{
-              await axios.get('/api/room/'+room);
+              await axios.get('/api/room/'+room.toLowerCase());
               setRoomStatus("Room already exist");
             }catch(e){
               setRoomStatus("Room is available");
-              if (event.key === 'Enter') {
-                try{
-                  if(mailInput.trim.length!==6&&validateEmail(mailInput)){
-                    setRoomStatus("Creating new room");
-                    const response = await axios.post('/api/room/'+room);
-                    await sendMail(room,response.data.password);
-                    setRoomStatus("Room created, check your e-mail");
-                  }else{
-                    setRoomStatus("Email is not valid");
-                  }
-                }catch(e){
-                  setRoomStatus("Something went wrong");
-                }
-              }
             }
           }else{
             setRoomStatus("Room should be at least 3 characters");
           }
+        }} onKeyDown={async(event)=>{
+          if(room.toLowerCase().trim().length>=2){
+            if (event.key === 'Enter') {
+              try{
+                if(mailInput.trim.length!==6&&validateEmail(mailInput)){
+                  setRoomStatus("Creating new room");
+                  const response = await axios.post('/api/room/'+room.toLowerCase(),{
+                    mailInput
+                  });
+                  setRoomStatus("Room created, check your e-mail");
+                }else{
+                  setRoomStatus("Email is not valid");
+                }
+              }catch(e){
+              }
+            }
+          }
         }} type="text"/>
         <p>{roomStatus}</p>
+        <p>Go to room</p>
+        <input id="gotoroom" onChange={event => setGotoroomInput(event.target.value.toLowerCase())}  type="text" onKeyUp={async (event)=>{
+          if(gotoroomInput.toLowerCase().trim().length>=3){
+            try{
+              await axios.get('/api/room/'+gotoroomInput.toLowerCase());
+              setGotoroomStatus("Room exist");
+            }catch(e){
+              setGotoroomStatus("Room does not exist");
+            }
+          }else{
+            setGotoroomStatus("Room should be at least 3 characters");
+          }
+        }} onKeyDown={async (event)=>{
+          try{
+            await axios.get('/api/room/'+gotoroomInput.toLowerCase());
+            if (event.key === 'Enter') {
+              router.push('/'+gotoroomInput.toLowerCase());
+            }
+            setGotoroomStatus("Room exist");
+          }catch(e){
+            setGotoroomStatus("Room does not exist");
+          }
+        }}/>
+        <p>{gotoroomStatus}</p>
     </div>
   )
 }
