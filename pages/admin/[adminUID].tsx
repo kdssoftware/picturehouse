@@ -48,7 +48,19 @@ export default function Page({room}:{room:RoomProps}) {
             <h2>{room.name} // admin panel</h2>
             <hr/>
             <label htmlFor="locked">Lock the room:</label>
-            <select name="locked" id="lock">
+            <select name="locked" id="lock" onChange={async (event)=>{
+              const locked=event.target.value.trim()==="true";
+              const adminuid = location.pathname.replace(/\/admin\//g,"");
+              try{
+                await axios.patch("/api/room/"+room.name,{
+                  adminuid,
+                  locked
+                })
+                setLocked(locked);
+              }catch(e){
+                console.trace(e);
+              }
+            }}>
               <option value="true">Locked</option>
               <option value="false">Unlocked</option>
             </select>
