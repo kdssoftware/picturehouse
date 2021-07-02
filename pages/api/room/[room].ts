@@ -9,23 +9,26 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
   const rooms = await db.collection("rooms");
   switch(_.method){
     case "PATCH":
-      if(!_.query.room){
+      if(!_.query.room&&!_.body.adminuid){
         res.status(404).send("Not found");
         return;
       }else{
         try{
-          console.log(_.body);
-          const response :Room= await rooms.findOne({name:_.query.room,adminUID:_.body.admin});
-          console.log(response,"room");
+          const response :Room= await rooms.findOne({name:_.query.room,adminUID:_.body.adminuid});
           if(!response){
             res.status(401).send("Unauthorized");
             return;
           }else{
-            const resp = await rooms.updateOne({password:_.body.password||response.password,locked:_.body.locked});
+            const updateData = {
+              password:_.body.password?_.body.password:response.password,
+              locked:_.body.locked! == undefined?_.body.locked:response.locked
+            };
+            const resp = await rooms.updateOne({_id:response._id},{ $set: updateData },{ upsert: true });
             res.status(200).send(resp);
             return;
           }
         }catch(e){
+          console.trace(e);
           res.status(500).send("Internal error");
           return;
         }
@@ -64,18 +67,20 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
             to:_.body.mailInput,
             subject: "Your room information", // Subject line
             html: html, // html body
+            text:"Your room information at Picture House\nRoom name: https://picturehouse.be/"+newRoom.name+"\n Password:</b> "+newRoom.password+"\nAdmin panel:https://picturehouse.be/admin/"+newRoom.adminUID+""
           }
-          await mail(mailOptions);
+          const mailing = await mail(mailOptions);
         res.status(201).json(r.ops[0]);
         }
       }catch(e){
+        console.trace(e);
         res.status(500).send("Internal error");
       }
       break;
     case "GET":
       if(!_.query?.room){
         res.status(404).send("Not found");
-        return;
+        return;``
       }
       const f = await rooms.findOne({name:_.query.room});
       if(f){

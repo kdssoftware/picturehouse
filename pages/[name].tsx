@@ -45,15 +45,15 @@ export default function Page({room}:{room:RoomProps}) {
       setPage(page+1);
       const data = response?.data;
       if(data?.length!==0){
-        setPictures([
+        await setPictures([
           ...pictures,
           ...data
         ])
       }else{
         console.log("no more pictures to load");
-        setHasMore(false);
+        await setHasMore(false);
       }
-      setIsWaitForNextLoad(false);
+      await setIsWaitForNextLoad(false);
     }catch(e){
       throw new Error(e);
     }

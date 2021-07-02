@@ -3,5 +3,6 @@ export default interface roomProps{
     password:string,
     email?:string,
     locked:boolean
-    adminUID?:string
+    adminUID?:string,
+    _id?:string
 }

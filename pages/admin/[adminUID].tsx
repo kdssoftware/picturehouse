@@ -14,7 +14,7 @@ export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
   const [isLocked,setLocked]= useState<boolean>(room.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
-  const [passwordRoom,setPasswordRoom] = useState("");
+  const [passwordRoom,setPasswordRoom] = useState(room.password);
   const [passwordChangeStatus,setPasswordChangeStatus] = useState("");
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
@@ -32,23 +32,25 @@ export default function Page({room}:{room:RoomProps}) {
   }
   
   return (
-    <>
-    {
-        isLocked?(
-          <>
-          <h1>This room is locked</h1>
-          <form onSubmit={handlePasswordForm}>
-            <label htmlFor="pass">please provide the password</label>
-            <input type="password" name="password"/>
-          </form>
-          <p>{passwordStatus}</p>
-          </>
-        ):(
+       
           <>
             <h2>{room.name} // admin panel</h2>
             <hr/>
             <label htmlFor="locked">Lock the room:</label>
-            <select name="locked" id="lock">
+            <select name="locked" id="lock" onChange={async (event)=>{
+              const locked=event.target.value.trim()==="true";
+              const adminuid = location.pathname.replace(/\/admin\//g,"");
+              console.log(locked);
+              try{
+                await axios.patch("/api/room/"+room.name,{
+                  adminuid,
+                  locked
+                })
+                setLocked(locked);
+              }catch(e){
+                console.trace(e);
+              }
+            }}>
               <option value="true">Locked</option>
               <option value="false">Unlocked</option>
             </select>
@@ -66,12 +68,9 @@ export default function Page({room}:{room:RoomProps}) {
                     setPasswordChangeStatus("Something went wrong");
                   }
               }
-            }} value={room.password}/>
+            }} defaultValue={room.password}/>
             <p>{passwordChangeStatus}</p>
           </>
-          )
-        }
-    </>
   )
 }
 //@ts-ignore
