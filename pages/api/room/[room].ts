@@ -21,9 +21,9 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
           }else{
             const updateData = {
               password:_.body.password?_.body.password:response.password,
-              locked:_.body.locked?_.body.locked:response.locked
+              locked:_.body.locked! == undefined?_.body.locked:response.locked
             };
-            const resp = await rooms.updateOne({name:_.query.room},{ $set: updateData },{ upsert: true });
+            const resp = await rooms.updateOne({_id:response._id},{ $set: updateData },{ upsert: true });
             res.status(200).send(resp);
             return;
           }
