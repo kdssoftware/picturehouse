@@ -28,8 +28,12 @@ export default function Home() {
     <div className={styles.container}>
         <h2>Create new room
         </h2>
-        <Input label="E-mail" type="email" name="email" id="e-mail" onChange={event => setMailInput(event.target.value)}/>
-        <Input label="Room" type="text" name="room" id="room"  onChange={event => setRoom(event.target.value.toLowerCase())} onKeyUp={async (event)=>{
+        <Input label="E-mail" type="email" name="email" id="e-mail" onChange={
+          //@ts-ignore
+          event => setMailInput(event.target.value)}/>
+        <Input label="Room" type="text" name="room" id="room"  onChange={
+          //@ts-ignore
+          event => setRoom(event.target.value.toLowerCase())} onKeyUp={async (event)=>{
           if(room.toLowerCase().trim().length>=3){
             if(event.key!=="Enter"){
               try{
@@ -43,7 +47,9 @@ export default function Home() {
           }else{
             setRoomStatus("Room should be at least 3 characters");
           }
-        }} onKeyDown={async(event)=>{
+        }} onKeyDown={async(
+          //@ts-ignore
+          event)=>{
           if(room.toLowerCase().trim().length>=2){
             if (event.key === 'Enter') {
               try{
