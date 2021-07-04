@@ -26,6 +26,7 @@ type BlobCorrected = {
 }
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader('Content-Security-Polic',"vitals.vercel-insights.com");
   const { db } = await connectToDatabase();
   const rooms = await db.collection("rooms");
   const room:Room = await rooms.findOne({name:_.query.room});

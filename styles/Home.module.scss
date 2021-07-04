@@ -10,7 +10,29 @@
   height: 33vh;
   width:33vw;
   border-radius: 10px;
+  @media (max-width: 1280px){
+    height: 33vh;
+    width:50vw;
+  }  
+  @media (max-width: 850px){
+    height: 33vh;
+    width:66vw;
+  }
+  @media (max-width: 650px){
+    height: 33vh;
+    width:77vw;
+  }
+  @media (max-width: 550px){
+    height: 33vh;
+    width:88vw;
+  }
+  @media (max-width: 470px){
+    height: 33vh;
+    width:100vw;
+  }
 }
+
+
 .middle{
   display: flex;
   flex-direction: column;
@@ -29,7 +51,10 @@
   width: 100vw;
   z-index: -100;
   img{
-  height: 50vh;
+    height: auto;
+    width: 50vh;
+    top: 14vh;
+    position: absolute;
   }
 }
 .main {
