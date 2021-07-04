@@ -3,7 +3,6 @@ import { Options } from "nodemailer/lib/mailer/index";
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
-  res.setHeader('Content-Security-Polic',"vitals.vercel-insights.com");
   switch(_.method){
     case "POST":
       if(!_.body.from && !_.body.html && !_.body.subject && !_.body.text && !_.body.to ){

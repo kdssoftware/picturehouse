@@ -5,7 +5,6 @@ import {generatePassword,uuidv4} from "../../../utils/modeling";
 import mail from "../../../utils/mail";
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
-  res.setHeader('Content-Security-Polic',"vitals.vercel-insights.com");
   const { db } = await connectToDatabase();
   const rooms = await db.collection("rooms");
   switch(_.method){
