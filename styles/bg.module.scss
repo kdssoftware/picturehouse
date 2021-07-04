@@ -5,38 +5,12 @@
     position: fixed;
     color: #fff;
     //#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3
-    background: linear-gradient(-45deg, #526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3);
+    background: linear-gradient(-45deg, #526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3,#526A95, #4C8780, #549659, #5DA68A, #67B5B8,#66ADF4 , #73A3F5, #7F99F5, #AF8CF5, #8A90E3);
     background-size: 1000% 1000%;
-    -webkit-animation: Gradient 200s linear infinite;
-    -moz-animation: Gradient 200s linear infinite;
-    animation: Gradient 200s linear infinite;
+    animation: Gradient 400s linear infinite;
 }
 
-//animations
-@-webkit-keyframes Gradient {
-    0% {
-    background-position: 0% 50%
-    }
-    50% {
-    background-position: 100% 50%
-    }
-    100% {
-    background-position: 0% 50%
-    }
-  }
-  
-  @-moz-keyframes Gradient {
-    0% {
-    background-position: 0% 50%
-    }
-    50% {
-    background-position: 100% 50%
-    }
-    100% {
-    background-position: 0% 50%
-    }
-  }
-  
+//animations 
   @keyframes Gradient {
     0% {
     background-position: 0% 50%

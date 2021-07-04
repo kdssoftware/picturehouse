@@ -17,20 +17,6 @@ export default function Page({room}:{room:RoomProps}) {
   const [passwordRoom,setPasswordRoom] = useState(room.password);
   const [passwordChangeStatus,setPasswordChangeStatus] = useState("");
 
-  const handlePasswordForm = async (event:SyntheticEvent) => {
-    event.preventDefault();
-    try{
-      await axios.post("/api/room/auth",{
-        //@ts-ignore
-        password:event.target.password.value,
-        room:room.name
-      })
-      setLocked(false);
-    }catch(e){
-      setPasswordStatus("Password was incorrect, please view the email is you are the one that created this room");
-    }
-  }
-  
   return (
        
           <>

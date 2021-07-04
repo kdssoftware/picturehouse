@@ -22,7 +22,7 @@ export default function Home() {
     <>
     <Bg />
     <div className={styles.logo}>
-      <img  src="/logo_transparent.png" alt="" />
+      <img  src="/logo.svg" alt="" />
     </div>
     <div className={styles.middle}>
     <div className={styles.container}>

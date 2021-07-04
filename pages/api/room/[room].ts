@@ -5,6 +5,7 @@ import {generatePassword,uuidv4} from "../../../utils/modeling";
 import mail from "../../../utils/mail";
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader('Content-Security-Polic',"vitals.vercel-insights.com");
   const { db } = await connectToDatabase();
   const rooms = await db.collection("rooms");
   switch(_.method){
@@ -19,10 +20,12 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
             res.status(401).send("Unauthorized");
             return;
           }else{
+            console.log(_.body.locked);
             const updateData = {
               password:_.body.password?_.body.password:response.password,
-              locked:_.body.locked! == undefined?_.body.locked:response.locked
+              locked:String(_.body.locked)==="true"
             };
+            console.log(updateData);
             const resp = await rooms.updateOne({_id:response._id},{ $set: updateData },{ upsert: true });
             res.status(200).send(resp);
             return;
@@ -78,11 +81,12 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       }
       break;
     case "GET":
-      if(!_.query?.room){
+      if(!_.query.room){
         res.status(404).send("Not found");
         return;``
       }
       const f = await rooms.findOne({name:_.query.room});
+      console.log(f);
       if(f){
         delete f.password;
         delete f.adminUID;

@@ -4,6 +4,7 @@ import Room from '../../../interface/roomProps'
 import {generatePassword} from "../../../utils/modeling";
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader('Content-Security-Polic',"vitals.vercel-insights.com");
   const { db } = await connectToDatabase();
   const rooms = await db.collection("rooms");
   switch(_.method){
