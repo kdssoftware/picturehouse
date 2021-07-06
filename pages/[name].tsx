@@ -75,6 +75,7 @@ export default function Page({room}:{room:RoomProps}) {
   
   return (
     <>
+    <div className={Style.main}></div>
       {
         room?
         <>
@@ -95,8 +96,11 @@ export default function Page({room}:{room:RoomProps}) {
             onSubmit={(e:SyntheticEvent)=>{
                 handleSubmit(e);
             }}>
-              <input id="images" name="image" type="file" multiple/>
-              <button type="submit">submit</button>
+              <label htmlFor="images" className={Style.inputCustom}>
+                Add new pictures
+              </label>
+              <input className={Style.fileinput} id="images" name="image" type="file" multiple/>
+              <button className={Style.submitButton} type="submit">Upload</button>
             </form>
             <div className={Style.pictures}>
               {
@@ -124,7 +128,7 @@ export default function Page({room}:{room:RoomProps}) {
                 {
                     (isWaitForNextLoad&&hasMore)&&
                     (
-                        "loading..."
+                      <div className={Style.loading}>loading...</div>
                     )
                 }
             </div>

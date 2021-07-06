@@ -4,11 +4,13 @@
     padding: 5px;
     justify-content: space-evenly;
     .pic{
-        margin: 5px;
+        margin: 1px;
         width: 32%;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        border: 3px solid #e1e1e1;
+        background: #e1e1e1;
     }
 }
 .ref{
@@ -16,4 +18,44 @@
     position: relative;
     width: 100%;
     height: 50px;
+}
+.main{
+    background:#345e7b;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: block;
+    z-index: -100;
+}
+.inputCustom{
+    border: 1px solid #e1e1e1;
+    display: inline-block;
+    width:100%;
+    padding:15px 20px;
+    cursor:pointer;
+    text-align: center;
+    background: #e1e1e1;
+}
+.fileinput{
+    display: none;
+}
+.submitButton{
+    display:inline-block;
+    padding:6px 12px;
+    cursor:pointer;
+    background: #9b9b9b;
+    border: 1px solid #9b9b9b;
+    text-align: center;
+    width:100%;
+}
+.loading{
+    display:inline-block;
+    padding:6px 12px;
+    cursor:pointer;
+    background: #223e52;
+    border: 1px solid #223e52;
+    width:100%;
+    text-align: center;
 }
