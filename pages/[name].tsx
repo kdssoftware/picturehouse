@@ -16,7 +16,7 @@ export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
   const [ref, isAtEnd] = useInView({
     threshold: 0,
-  })
+  });
   const [imagesInput,setImagesInput] = useState(null);
   const [isWaitForNextLoad,setIsWaitForNextLoad] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -146,13 +146,23 @@ export default function Page({room}:{room:RoomProps}) {
   )
 }
 
-//@ts-ignore
-Page.getInitialProps = async (ctx:any)=>{
+export async function getServerSideProps(ctx:any) {
   let res;
   try{
     res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
-    return {room:res.data};
+    return {props:{room:res.data}};
   }catch(e){
-    return {room:null}
+    return {props:{room:null}}
   }
 }
+
+// //@ts-ignore
+// Page.getInitialProps = async (ctx:any)=>{
+//   let res;
+//   try{
+//     res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+//     return {room:res.data};
+//   }catch(e){
+//     return {room:null}
+//   }
+// }
