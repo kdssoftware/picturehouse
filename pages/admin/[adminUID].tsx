@@ -25,11 +25,11 @@ export default function Page({room}:{room:RoomProps}) {
             <label htmlFor="locked">Lock the room:</label>
             <select name="locked" id="lock" onChange={async (event)=>{
               const locked=event.target.value.trim()==="true";
-              const adminuid = location.pathname.replace(/\/admin\//g,"");
+              const admin = location.pathname.replace(/\/admin\//g,"");
               console.log(locked);
               try{
                 await axios.patch("/api/room/"+room.name,{
-                  adminuid,
+                  admin,
                   locked
                 })
                 setLocked(locked);
@@ -59,8 +59,19 @@ export default function Page({room}:{room:RoomProps}) {
           </>
   )
 }
-//@ts-ignore
-Page.getInitialProps = async (ctx:any)=>{
-    const res = await axios.get('http://localhost:3000/api/admin/'+ctx.query.adminUID);
-    return {room:res.data};
+
+export async function getServerSideProps(ctx:any) {
+  let res;
+  try{
+    const res = await axios.get(process.env.NEXT_PUBLIC_HOST+'/api/admin/'+ctx.query.adminUID);
+    return {props:{room:res.data}};
+  }catch(e){
+    return {props:{room:null}}
+  }
 }
+
+// //@ts-ignore
+// Page.getInitialProps = async (ctx:any)=>{
+//     const res = await axios.get('http://localhost:3000/api/admin/'+ctx.query.adminUID);
+//     return {room:res.data};
+// }

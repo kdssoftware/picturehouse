@@ -149,7 +149,7 @@ export default function Page({room}:{room:RoomProps}) {
 export async function getServerSideProps(ctx:any) {
   let res;
   try{
-    res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+    res = await axios.get(process.env.NEXT_PUBLIC_HOST+'/api/room/'+ctx.query.name);
     return {props:{room:res.data}};
   }catch(e){
     return {props:{room:null}}

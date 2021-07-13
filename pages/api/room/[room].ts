@@ -9,12 +9,13 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
   const rooms = await db.collection("rooms");
   switch(_.method){
     case "PATCH":
-      if(!_.query.room&&!_.body.adminuid){
+      if(!_.query.room&&!_.body.admin){
         res.status(404).send("Not found");
         return;
       }else{
         try{
-          const response :Room= await rooms.findOne({name:_.query.room,adminUID:_.body.adminuid});
+          console.log({name:_.query.room,adminUID:_.body.admin});
+          const response :Room= await rooms.findOne({name:_.query.room,adminUID:_.body.admin});
           if(!response){
             res.status(401).send("Unauthorized");
             return;
@@ -55,13 +56,13 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
           let html = "<h1>Your room information at Picture House</h1>";
           html += "<ul>";
           html += "<li>";
-          html += "<b>Room name:</b> <a href='https://picturehouse.be/"+newRoom.name+"'> https://picturehouse.be/"+newRoom.name+"</a>";
+          html += "<b>Room name:</b> <a href='"+process.env.NEXT_PUBLIC_HOST+"/"+newRoom.name+"'> "+process.env.NEXT_PUBLIC_HOST+"/"+newRoom.name+"</a>";
           html += "</li>";
           html += "<li>";
           html += "<b>Password:</b> "+newRoom.password;
           html += "</li>";
           html += "<li>";
-          html += "<b>Admin panel:</b> <a href='https://picturehouse.be/admin/"+newRoom.adminUID+"'> https://picturehouse.be/admin/"+newRoom.adminUID+"</a>";
+          html += "<b>Admin panel:</b> <a href='"+process.env.NEXT_PUBLIC_HOST+"/admin/"+newRoom.adminUID+"'> "+process.env.NEXT_PUBLIC_HOST+"/admin/"+newRoom.adminUID+"</a>";
           html += "</li>";
           html += "</ul>";
           const mailOptions = {
@@ -69,7 +70,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
             to:_.body.mailInput,
             subject: "Your room information", // Subject line
             html: html, // html body
-            text:"Your room information at Picture House\nRoom name: https://picturehouse.be/"+newRoom.name+"\n Password:</b> "+newRoom.password+"\nAdmin panel:https://picturehouse.be/admin/"+newRoom.adminUID+""
+            text:"Your room information at Picture House\nRoom name: "+process.env.NEXT_PUBLIC_HOST+"/"+newRoom.name+"\n Password:</b> "+newRoom.password+"\nAdmin panel:"+process.env.NEXT_PUBLIC_HOST+"/admin/"+newRoom.adminUID+""
           }
           const mailing = await mail(mailOptions);
         res.status(201).json(r.ops[0]);
