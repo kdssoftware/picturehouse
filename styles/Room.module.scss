@@ -51,6 +51,18 @@
     width:100%;
 }
 .loading{
+    background: #6de237;
+}
+.disabled{
+    background: #9b9b9b;
+}
+.enabled{
+    background: #5dbaca;
+}
+.hasFiles{
+    background: #5dca8e;
+}
+.loadingPics{
     display:inline-block;
     padding:6px 12px;
     cursor:pointer;

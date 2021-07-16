@@ -11,6 +11,7 @@ import {uuidv4} from "../utils/modeling";
 import { SyntheticEvent, useRef, useState } from 'react'
 import {  useRouter } from 'next/router'
 import ErrorPage from 'next/error'
+import { useEffect } from 'react';
 
 export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
@@ -24,20 +25,56 @@ export default function Page({room}:{room:RoomProps}) {
   const [isLocked,setLocked]= useState<boolean>(room?.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
   const [page,setPage] = useState(1);
+  const [files,setFiles] = useState<Array<any>>([]);
+  const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
+  const [uploadText,setUploadText] = useState("Upload");
   const defaultSizeToLoadPictures = 12;
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData();
     //@ts-ignore
     const files:File[] = event.target.images.files;
+    let toState:Picture[]; 
     for await (const file of files){
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
       }));
     }
-    const response = await axios.post("/api/image/"+room.name+"/",formData);
+    
+    setUploadText("Uploading files...");  
+    setUploadbar("loading");
+    const response = await axios.post("/api/image/"+room.name+"/",formData,{
+      onUploadProgress: function(progressEvent) {
+        var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+        console.log(progressEvent);
+      }}).then(()=>{
+        setUploadText("Upload");  
+        setUploadbar("enabled");
+    });
+    filesToPictures(files);
   }
-
+  const filesToPictures = async (files:File[]) =>{
+    let pics = [];
+    for await(let f of Array.from(files)){
+      await pics.push({
+        buffer: String(await toBase64(f)),
+        date:new Date(f.lastModified).toISOString(),
+        mimetype:f.type,
+        encoding:"7bit ",
+        name:f.name,
+        room:room.name,
+        size:f.size,
+        _id:"added_in_state"
+      });
+    }
+    await setPictures(
+      [
+        ...pics,
+        ...pictures
+      ]
+    )
+    return pics;
+  }
   const loadPictures = async () => {
     setIsWaitForNextLoad(true);
     try{
@@ -48,9 +85,8 @@ export default function Page({room}:{room:RoomProps}) {
         await setPictures([
           ...pictures,
           ...data
-        ])
+        ]);
       }else{
-        console.log("no more pictures to load");
         await setHasMore(false);
       }
       await setIsWaitForNextLoad(false);
@@ -58,6 +94,22 @@ export default function Page({room}:{room:RoomProps}) {
       throw new Error(e);
     }
   }
+  const toBase64 = (f:File) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(f);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});
+  useEffect(()=>{
+    console.log(files);
+    if(files.length>0){
+      setUploadText(files.length+" files to upload");  
+      setUploadbar("hasFiles");
+    }else{
+      setUploadText("Upload");
+      setUploadbar("enabled");
+    }
+  },[files])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
@@ -72,7 +124,7 @@ export default function Page({room}:{room:RoomProps}) {
       setPasswordStatus("Password was incorrect, please view the email is you are the one that created this room");
     }
   }
-  
+
   return (
     <>
     <div className={Style.main}></div>
@@ -99,15 +151,24 @@ export default function Page({room}:{room:RoomProps}) {
               <label htmlFor="images" className={Style.inputCustom}>
                 Add new pictures
               </label>
-              <input className={Style.fileinput} id="images" name="image" type="file" multiple/>
-              <button className={Style.submitButton} type="submit">Upload</button>
+              <input className={Style.fileinput} id="images" name="image" type="file" onChange={(e:SyntheticEvent)=>{
+                setFiles([...files,
+                  //@ts-ignore
+                  ...e.target.files]);
+              }} multiple/>
+              <button className={Style.submitButton+" "+Style[uploadbar]} type="submit" >{uploadText}</button>
             </form>
             <div className={Style.pictures}>
               {
                 pictures.map((picture,index)=>{
                   const image = new Image();
                   image.onload;
-                  image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
+                  if(picture._id==="added_in_state"){
+                    image.src = String(picture.buffer);
+                  }else{
+                    image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
+                  }
+                  
                   
                   return(
                   <div className={Style.pic} key={index}>
@@ -128,7 +189,7 @@ export default function Page({room}:{room:RoomProps}) {
                 {
                     (isWaitForNextLoad&&hasMore)&&
                     (
-                      <div className={Style.loading}>loading...</div>
+                      <div className={Style.loadingPics}>loading...</div>
                     )
                 }
             </div>
@@ -161,6 +222,7 @@ export async function getServerSideProps(ctx:any) {
 //   let res;
 //   try{
 //     res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
+//     https://img-9gag-fun.9cache.com/photo/apNj7z5_460svvp9.webm
 //     return {room:res.data};
 //   }catch(e){
 //     return {room:null}

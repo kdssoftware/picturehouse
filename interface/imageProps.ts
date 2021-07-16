@@ -1,6 +1,6 @@
 export default interface imageProps{
-    buffer:Buffer,
-    date:Date
+    buffer:Buffer|string,
+    date:Date|string,
     mimetype:string,
     name:string,
     encoding:string,
