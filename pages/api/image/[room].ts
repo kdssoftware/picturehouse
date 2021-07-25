@@ -5,25 +5,11 @@ import {uuidv4} from "../../../utils/modeling";
 import Room from '../../../interface/roomProps';
 import Image from '../../../interface/imageProps';
 import multer from "multer";
-
-const upload = multer();
-
-const multerAny = initMiddleware(
-  upload.any()
-);
-
-type NextApiRequestWithFormData = NextApiRequest & {
-  files: any[],
-}
-
-type BlobCorrected = {
-  fieldname:string,
-  originalName:string,
-  encoding:string,
-  mimetype:string,
-  buffer:Buffer,
-  size:number
-}
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import FormData from "form-data";
+import superagent from 'superagent';
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
 
@@ -32,29 +18,14 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
   const room:Room = await rooms.findOne({name:_.query.room});
   switch(_.method){
     case "POST":
-      await multerAny(_, res);
-      //@ts-ignore
-      if (!_?.files?.length) {
+      if (!_?.query?.url) {
         res.statusCode = 400;
         res.end();
         return;
       }else{
-        //@ts-ignore
-        const blobs: BlobCorrected[] = _.files;
-        const imagesData:Image[] = blobs.map((blob:BlobCorrected)=>{
-          return {
-            buffer:blob.buffer,
-            date:new Date(),
-            encoding:blob.encoding,
-            name:uuidv4(),
-            room:room.name,
-            size:blob.size,
-            mimetype:blob.mimetype
-          }
-        });
-      const images = await db.collection("images");
-      const response = await images.insertMany(imagesData);
-      res.status(200).json(response);
+        const images = await db.collection("images");
+        const response = await images.insertOne({url:_.query.url,room:_.query.room});
+        res.status(200).json(response);
       }
       break;
     case "GET":
@@ -79,7 +50,6 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       res.status(405).send(_.method+" is not allowed");
   }
 }
-
 
 export const config = {
   api: {

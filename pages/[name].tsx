@@ -21,7 +21,7 @@ export default function Page({room}:{room:RoomProps}) {
   const [imagesInput,setImagesInput] = useState(null);
   const [isWaitForNextLoad,setIsWaitForNextLoad] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [pictures,setPictures] = useState<Array<Picture>>([]);
+  const [pictures,setPictures] = useState<Array<any>>([]);
   const [isLocked,setLocked]= useState<boolean>(room?.locked);
   const [passwordStatus,setPasswordStatus] = useState("");
   const [page,setPage] = useState(1);
@@ -29,52 +29,43 @@ export default function Page({room}:{room:RoomProps}) {
   const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
   const [uploadText,setUploadText] = useState("Upload");
   const defaultSizeToLoadPictures = 12;
+
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData();
     //@ts-ignore
-    const files:File[] = event.target.images.files;
-    let toState:Picture[]; 
+    const files:any[] = event.target.images.files;
     for await (const file of files){
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
-        type: file.type,
+        type: file.type,  
       }));
     }
     
     setUploadText("Uploading files...");  
     setUploadbar("loading");
-    const response = await axios.post("/api/image/"+room.name+"/",formData,{
-      onUploadProgress: function(progressEvent) {
-        var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-        console.log(progressEvent);
-      }}).then(()=>{
-        setUploadText("Upload");  
-        setUploadbar("enabled");
+    axios.post("https://images.picturehouse.be/",formData,{
+    onUploadProgress: function(progressEvent) {
+      var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+      console.log(percentCompleted+"%");
+    }}).then(async (response) => {
+      let urls = response.data;
+      setUploadText("Upload");  
+      setUploadbar("enabled");
+      await setPictures(
+        [
+          ...urls,
+          ...pictures
+        ]
+      );
+      for (const url of urls) {
+        axios({
+          method: "POST",
+          url:"/api/image/"+room.name+"/?url="+url
+        });
+      }
     });
-    filesToPictures(files);
   }
-  const filesToPictures = async (files:File[]) =>{
-    let pics = [];
-    for await(let f of Array.from(files)){
-      await pics.push({
-        buffer: String(await toBase64(f)),
-        date:new Date(f.lastModified).toISOString(),
-        mimetype:f.type,
-        encoding:"7bit ",
-        name:f.name,
-        room:room.name,
-        size:f.size,
-        _id:"added_in_state"
-      });
-    }
-    await setPictures(
-      [
-        ...pics,
-        ...pictures
-      ]
-    )
-    return pics;
-  }
+  
   const loadPictures = async () => {
     setIsWaitForNextLoad(true);
     try{
@@ -84,7 +75,8 @@ export default function Page({room}:{room:RoomProps}) {
       if(data?.length!==0){
         await setPictures([
           ...pictures,
-          ...data
+          //@ts-ignore
+          ...data.map(d=>d.url)
         ]);
       }else{
         await setHasMore(false);
@@ -161,24 +153,14 @@ export default function Page({room}:{room:RoomProps}) {
             <div className={Style.pictures}>
               {
                 pictures.map((picture,index)=>{
-                  const image = new Image();
-                  image.onload;
-                  if(picture._id==="added_in_state"){
-                    image.src = String(picture.buffer);
-                  }else{
-                    image.src = "data:"+picture.mimetype+";base64,"+picture.buffer; 
-                  }
-                  
-                  
                   return(
-                  <div className={Style.pic} key={index}>
-                        <NextImage
-                        src={image.src}
-                        width={image.width*10}
-                        height={image.height*10}
-                        />
-                  </div>
-                  )})
+                    <div className={Style.pic} key={index}>
+                          <img
+                            src={picture}
+                          />
+                    </div>
+                    )
+                  })
               }
             </div>
             <div id="ref" className={Style.ref} ref={ref}>
@@ -210,7 +192,9 @@ export default function Page({room}:{room:RoomProps}) {
 export async function getServerSideProps(ctx:any) {
   let res;
   try{
+    console.log("fetching room props "+ctx.query.name,process.env.NEXT_PUBLIC_HOST+'/api/room/'+ctx.query.name);
     res = await axios.get(process.env.NEXT_PUBLIC_HOST+'/api/room/'+ctx.query.name);
+    console.log("room ",res.data);
     return {props:{room:res.data}};
   }catch(e){
     return {props:{room:null}}

@@ -15,7 +15,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       }else{
         try{
           console.log({name:_.query.room,adminUID:_.body.admin});
-          const response :Room= await rooms.findOne({name:_.query.room,adminUID:_.body.admin});
+          const response :Room = await rooms.findOne({name:_.query.room,adminUID:_.body.admin});
           if(!response){
             res.status(401).send("Unauthorized");
             return;
@@ -81,6 +81,7 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
       }
       break;
     case "GET":
+      console.log("getting "+_.query.room);
       if(!_.query.room){
         res.status(404).send("Not found");
         return;``
