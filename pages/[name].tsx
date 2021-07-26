@@ -28,6 +28,7 @@ export default function Page({room}:{room:RoomProps}) {
   const [files,setFiles] = useState<Array<any>>([]);
   const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
   const [uploadText,setUploadText] = useState("Upload");
+  const [progress, setProgress] = useState(0);
   const defaultSizeToLoadPictures = 12;
 
   const handleSubmit = async (event:SyntheticEvent) => {
@@ -35,9 +36,12 @@ export default function Page({room}:{room:RoomProps}) {
     const formData = new FormData();
     //@ts-ignore
     const files:any[] = event.target.images.files;
+    if(files?.length<= 0){
+      return;
+    }
     for await (const file of files){
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
-        type: file.type,  
+        type: file.type,
       }));
     }
     
@@ -45,9 +49,11 @@ export default function Page({room}:{room:RoomProps}) {
     setUploadbar("loading");
     axios.post("https://images.picturehouse.be/",formData,{
     onUploadProgress: function(progressEvent) {
-      var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+      let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+      setProgress(percentCompleted);
       console.log(percentCompleted+"%");
     }}).then(async (response) => {
+      setFiles([]);
       let urls = response.data;
       setUploadText("Upload");  
       setUploadbar("enabled");
@@ -60,7 +66,7 @@ export default function Page({room}:{room:RoomProps}) {
       for (const url of urls) {
         axios({
           method: "POST",
-          url:"/api/image/"+room.name+"/?url="+url
+          url:"/api/image/"+room.name+"/?url="+JSON.stringify(url)
         });
       }
     });
@@ -76,7 +82,7 @@ export default function Page({room}:{room:RoomProps}) {
         await setPictures([
           ...pictures,
           //@ts-ignore
-          ...data.map(d=>d.url)
+          ...data
         ]);
       }else{
         await setHasMore(false);
@@ -148,7 +154,12 @@ export default function Page({room}:{room:RoomProps}) {
                   //@ts-ignore
                   ...e.target.files]);
               }} multiple/>
-              <button className={Style.submitButton+" "+Style[uploadbar]} type="submit" >{uploadText}</button>
+              <div className={Style.progress} style={{
+                background:uploadbar==="loading"?"#6de237":"none",
+                width:uploadbar==="loading"?(progress)+"%":"100%",
+              }}>
+                <button className={Style.submitButton+" "+Style[uploadbar]} type="submit" >{uploadText}</button>
+              </div>
             </form>
             <div className={Style.pictures}>
               {
@@ -156,7 +167,7 @@ export default function Page({room}:{room:RoomProps}) {
                   return(
                     <div className={Style.pic} key={index}>
                           <img
-                            src={picture}
+                            src={picture.compressed}
                           />
                     </div>
                     )

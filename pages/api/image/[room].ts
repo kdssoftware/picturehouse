@@ -24,7 +24,11 @@ export default async (_: NextApiRequest, res: NextApiResponse) => {
         return;
       }else{
         const images = await db.collection("images");
-        const response = await images.insertOne({url:_.query.url,room:_.query.room});
+        let url = JSON.parse(String(_.query.url));
+        const response = await images.insertOne({
+          ...url,
+          room:_.query.room
+        });
         res.status(200).json(response);
       }
       break;
