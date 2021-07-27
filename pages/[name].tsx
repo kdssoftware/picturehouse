@@ -32,8 +32,8 @@ export default function Page({room}:{room:RoomProps}) {
   const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
   const [uploadText,setUploadText] = useState("Upload");
   const [progress, setProgress] = useState(0);
-  const [photoIndex,setPhotoIndex] = useState(null);
-  const [isOpen,setIsOpen] = useState(null);
+  const [photoIndex,setPhotoIndex] = useState<number>(0);
+  const [isOpen,setIsOpen] = useState<boolean>(false);
 
   const defaultSizeToLoadPictures = 12;
 
