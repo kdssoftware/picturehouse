@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#f1f2f3;display:block;z-index:1;position:relative" width="1920" height="920" preserveAspectRatio="xMidYMid" viewBox="0 0 1920 920">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#f1f2f3;display:block;z-index:1;position:relative" preserveAspectRatio="xMidYMid" viewBox="0 0 1920 920">
 <g transform="translate(960,460) scale(1,1) translate(-960,-460)"><linearGradient id="ldbk-pimgitdqkso" x1="-0.1" y1="0" x2="1.1" y2="1">
   <animate attributeName="y2" repeatCount="indefinite" dur="100s" keyTimes="0;0.5;1" values="-0.32;0.32;-0.32" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" calcMode="spline"></animate>
   <stop stop-color="#85a2b6" offset="0"></stop>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#f1f2f3;display:block;z-index:1;position:relative" width="1920" height="977" preserveAspectRatio="xMidYMid" viewBox="0 0 1920 977">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#f1f2f3;display:block;z-index:1;position:relative"  preserveAspectRatio="xMidYMid" viewBox="0 0 1920 977">
 <g transform="translate(960,488.5) scale(1,1) translate(-960,-488.5)"><g id="bk-0.5129315210828385"><path d="M 1013 497  L 902 519  L 980 607 Z" stroke="#a6c280" fill="#a6c280">
   <animate attributeName="d" repeatDur="indefinite" dur="10s" keyTimes="0;0.5;1" values="M 1013 497  L 902 519  L 980 607 Z;M 1019 526  L 893 501  L 1006 597 Z;M 1013 497  L 902 519  L 980 607 Z"></animate>
 </path><path d="M 902 519  L 897 604  L 980 607 Z" stroke="#a9bf78" fill="#a9bf78">
