@@ -69,30 +69,6 @@ export default function Home() {
           }
         }}/>
         <p>{roomStatus}</p>
-        {/* <p>Go to room</p>
-        <input id="gotoroom" onChange={event => setGotoroomInput(event.target.value.toLowerCase())}  type="text" onKeyUp={async (event)=>{
-          if(gotoroomInput.toLowerCase().trim().length>=3){
-            try{
-              await axios.get('/api/room/'+gotoroomInput.toLowerCase());
-              setGotoroomStatus("Room exist");
-            }catch(e){
-              setGotoroomStatus("Room does not exist");
-            }
-          }else{
-            setGotoroomStatus("Room should be at least 3 characters");
-          }
-        }} onKeyDown={async (event)=>{
-          try{
-            await axios.get('/api/room/'+gotoroomInput.toLowerCase());
-            if (event.key === 'Enter') {
-              router.push('/'+gotoroomInput.toLowerCase());
-            }
-            setGotoroomStatus("Room exist");
-          }catch(e){
-            setGotoroomStatus("Room does not exist");
-          }
-        }}/>
-        <p>{gotoroomStatus}</p> */}
     </div>
     </div>
     
