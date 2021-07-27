@@ -12,6 +12,9 @@ import { SyntheticEvent, useRef, useState } from 'react'
 import {  useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 import { useEffect } from 'react';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
+
 
 export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
@@ -29,6 +32,9 @@ export default function Page({room}:{room:RoomProps}) {
   const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
   const [uploadText,setUploadText] = useState("Upload");
   const [progress, setProgress] = useState(0);
+  const [photoIndex,setPhotoIndex] = useState(0);
+  const [isOpen,setIsOpen] = useState(false);
+
   const defaultSizeToLoadPictures = 12;
 
   const handleSubmit = async (event:SyntheticEvent) => {
@@ -133,6 +139,7 @@ export default function Page({room}:{room:RoomProps}) {
           <p>{passwordStatus}</p>
           </>
         ):(
+          <>
           <div className={Style.container}>
             <form 
             ref={formRef}
@@ -160,6 +167,10 @@ export default function Page({room}:{room:RoomProps}) {
                             placeholder={"blur"}
                             width={500}
                             height={500}
+                            onClick={()=>{
+                              setPhotoIndex(index);
+                              setIsOpen(true);
+                            }}
                           >
 
                           </NextImage>
@@ -181,6 +192,21 @@ export default function Page({room}:{room:RoomProps}) {
                 }
             </div>
           </div>
+          {isOpen && (
+            <Lightbox
+              mainSrc={"https://images.picturehouse.be/compressed-"+pictures[photoIndex].file}
+              nextSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
+              prevSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
+              onCloseRequest={() => setIsOpen( false)}
+              onMovePrevRequest={() =>
+                setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length)
+              }
+              onMoveNextRequest={() =>
+                setPhotoIndex((photoIndex + 1) % pictures.length)
+              }
+            />
+          )}
+          </>
         )
       }
         </>:(
