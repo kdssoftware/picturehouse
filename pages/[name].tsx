@@ -14,7 +14,10 @@ import ErrorPage from 'next/error'
 import { useEffect } from 'react';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
-
+import glassStyle from '../styles/Home.module.scss';
+import Input from "../components/input";
+import Bg from "../components/bg";
+import BgStyle from "../styles/bg.module.scss";
 
 export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
@@ -134,19 +137,23 @@ export default function Page({room}:{room:RoomProps}) {
 
   return (
     <>
-    <div className={Style.main}></div>
+    {/* <div className={Style.main}></div> */}
+    <img className={BgStyle.bg} src={"/bg.svg"} alt="" />
       {
         room?
         <>
         {
         isLocked?(
           <>
-          <h1>This room is locked</h1>
-          <form onSubmit={handlePasswordForm}>
-            <label htmlFor="pass">please provide the password</label>
-            <input type="password" name="password"/>
-          </form>
-          <p>{passwordStatus}</p>
+            <div className={glassStyle.middle}>
+              <div className={glassStyle.container }>
+                  <h2>This room is locked</h2>
+                  <form className={Style.lockForm} onSubmit={handlePasswordForm}>
+                      <Input label="Password" type="password" name="password" id="password" />
+                    </form>
+                  <p>{passwordStatus}</p>
+            </div>
+          </div>
           </>
         ):(
           <>
