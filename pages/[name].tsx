@@ -50,24 +50,34 @@ export default function Page({room}:{room:RoomProps}) {
     if(files?.length<= 0){
       return;
     }
+    let filesToUpload = files.length;
+    let filesUploaded = 0;
     setUploadStatus("spin");
-    for await (const file of files){
+    let urlsToShow : any[]= [];
+    for (const file of files){
       const formData = new FormData();
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
       }));
-      await axios.post("https://images.picturehouse.be/",formData,{
+      axios.post("https://images.picturehouse.be/",formData,{
         onUploadProgress: function(progressEvent) {
           let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
           console.log(percentCompleted);
         }}).then(async (response) => {
+          filesUploaded++;
           let urls = response.data;
-          await setPictures(
-            [
-              ...urls,
-              ...pictures
-            ]
-          );
+          urlsToShow.push(...urls);
+          if(filesUploaded == filesToUpload){
+            setFiles([]);
+            setUploadStatus("plus");
+            setHasMore(true);
+            setPictures(
+              [
+                ...urlsToShow,
+                ...pictures
+              ]
+            );
+          }
           for (const url of urls) {
             axios({
               method: "POST",
@@ -76,9 +86,8 @@ export default function Page({room}:{room:RoomProps}) {
           }
         });
     }
-    setFiles([]);
-    setUploadStatus("plus");
   }
+
   
   const loadPictures = async () => {
     setIsWaitForNextLoad(true);
@@ -100,12 +109,13 @@ export default function Page({room}:{room:RoomProps}) {
       throw new Error(e);
     }
   }
+  
   useEffect(()=>{
-    console.log(files);
-    if(files.length>0){
-    }else{
+    if(isOpen){
+      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
     }
-  },[files])
+  },[isOpen])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
@@ -120,25 +130,12 @@ export default function Page({room}:{room:RoomProps}) {
       setPasswordStatus("Password was incorrect, please view the email is you are the one that created this room");
     }
   }
-
-  useEffect((
-  )=>{
-    if(photoIndex&&isOpen){
-      // //next file downloading
-      //@ts-ignore
-      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
-      // //prev file downloading
-      //@ts-ignore
-      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
-    }
-  },[isOpen,photoIndex]);
-
   
-
+  
   return (
     <>
-    {/* <div className={Style.main}></div> */}
-    <img className={BgStyle.bg} src={"/bg.svg"} alt="" />
+    <div className={Style.main}></div>
+    {/* <img className={BgStyle.bg} src={"/bg.svg"} alt="" /> */}
       {
         room?
         <>
@@ -200,12 +197,14 @@ export default function Page({room}:{room:RoomProps}) {
               nextSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
               prevSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
               onCloseRequest={() => setIsOpen( false)}
-              onMovePrevRequest={() =>
-                setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length)
-              }
-              onMoveNextRequest={() =>
-                setPhotoIndex((photoIndex + 1) % pictures.length)
-              }
+              onMovePrevRequest={() =>{
+                setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length);
+                axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+              }}
+              onMoveNextRequest={() =>{
+                setPhotoIndex((photoIndex + 1) % pictures.length);
+                axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+              }}
             />
           )}
           <form 
