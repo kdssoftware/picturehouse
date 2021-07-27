@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#f1f2f3;display:block;z-index:1;position:relative" width="1920" height="977" preserveAspectRatio="xMidYMid" viewBox="0 0 1920 977">
+<g transform="translate(960,488.5) scale(1,1) translate(-960,-488.5)"><defs>
+
+<radialGradient id="ldbk-njfas78vxip" r="1" cx="0.46" cy="0.5" fx="0.54" fy="0.5" fr="0">
+  <animate attributeName="fy" repeatCount="indefinite" dur="4.761904761904762s" keyTimes="0;0.5;1" values="0.32;0.6799999999999999;0.32" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" calcMode="spline"></animate>
+  <animate attributeName="cy" repeatCount="indefinite" dur="7.142857142857143s" keyTimes="0;0.5;1" values="0.6799999999999999;0.32;0.6799999999999999" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" calcMode="spline"></animate>
+  <stop stop-color="#7f745b" offset="0%"></stop>
+  <stop stop-color="#bfa95b" offset="33%"></stop>
+  <stop stop-color="#d4c787" offset="66%"></stop>
+  <stop stop-color="#82c0af" offset="100%"></stop>
+</radialGradient>
+
+</defs>
+<g transform="translate(960 488.5)">
+<circle cx="0" cy="0" r="1077.140775386393" fill="url(#ldbk-njfas78vxip)">
+<animateTransform attributeName="transform" type="rotate" dur="14.285714285714286s" keyTimes="0;1" values="0;360" repeatCount="indefinite"></animateTransform>
+</circle>
+</g></g>
+</svg>

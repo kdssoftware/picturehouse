@@ -14,6 +14,7 @@ export default function Home() {
   const [mailInput,setMailInput] = useState('');
   const [gotoroomInput,setGotoroomInput] = useState('');
   const [gotoroomStatus,setGotoroomStatus] = useState('');
+
   function validateEmail(mail:string){
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailPattern.test(mail); 
