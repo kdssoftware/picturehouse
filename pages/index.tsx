@@ -27,9 +27,7 @@ export default function Home() {
   } 
   return (
     <>
-    <div className={BgStyle.bg}>
-    <img  src={"/bg/"+random+".svg"} alt="" />
-    </div>
+    <img className={BgStyle.bg} src={"/bg/"+random+".svg"} alt="" />
     <div className={styles.logo}>
       <img  src="/logo.svg" alt="" />
     </div>
