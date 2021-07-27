@@ -32,8 +32,8 @@ export default function Page({room}:{room:RoomProps}) {
   const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
   const [uploadText,setUploadText] = useState("Upload");
   const [progress, setProgress] = useState(0);
-  const [photoIndex,setPhotoIndex] = useState(0);
-  const [isOpen,setIsOpen] = useState(false);
+  const [photoIndex,setPhotoIndex] = useState(null);
+  const [isOpen,setIsOpen] = useState(null);
 
   const defaultSizeToLoadPictures = 12;
 
@@ -121,6 +121,18 @@ export default function Page({room}:{room:RoomProps}) {
       setPasswordStatus("Password was incorrect, please view the email is you are the one that created this room");
     }
   }
+
+  useEffect((
+  )=>{
+    if(photoIndex&&isOpen){
+      // //next file downloading
+      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+      // //prev file downloading
+      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+    }
+  },[isOpen,photoIndex]);
+
+  
 
   return (
     <>
