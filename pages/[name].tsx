@@ -29,13 +29,16 @@ export default function Page({room}:{room:RoomProps}) {
   const [passwordStatus,setPasswordStatus] = useState("");
   const [page,setPage] = useState(1);
   const [files,setFiles] = useState<Array<any>>([]);
-  const [uploadbar,setUploadbar] = useState('enabled');//disabled, enabled, uploading, hasFiles
-  const [uploadText,setUploadText] = useState("Upload");
+  const [uploadStatus,setUploadStatus] = useState('plus');
   const [progress, setProgress] = useState(0);
   const [photoIndex,setPhotoIndex] = useState<number>(0);
   const [isOpen,setIsOpen] = useState<boolean>(false);
 
   const defaultSizeToLoadPictures = 12;
+
+  useEffect(() => {
+    console.log(uploadStatus);
+  },[uploadStatus])
 
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
@@ -44,18 +47,16 @@ export default function Page({room}:{room:RoomProps}) {
     if(files?.length<= 0){
       return;
     }
-    setUploadText("Uploading files...");  
-    setUploadbar("loading");
+    setUploadStatus("spin");
     for await (const file of files){
       const formData = new FormData();
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
       }));
-      axios.post("https://images.picturehouse.be/",formData,{
+      await axios.post("https://images.picturehouse.be/",formData,{
         onUploadProgress: function(progressEvent) {
           let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-          setProgress((progress-Math.round(100.0/files.length))+(percentCompleted/files.length));
-          console.log(progress,(progress-Math.round(100.0/files.length))+(percentCompleted/files.length));
+          console.log(percentCompleted);
         }}).then(async (response) => {
           let urls = response.data;
           await setPictures(
@@ -73,8 +74,7 @@ export default function Page({room}:{room:RoomProps}) {
         });
     }
     setFiles([]);
-    setUploadText("Upload");  
-    setUploadbar("enabled");
+    setUploadStatus("plus");
   }
   
   const loadPictures = async () => {
@@ -100,11 +100,7 @@ export default function Page({room}:{room:RoomProps}) {
   useEffect(()=>{
     console.log(files);
     if(files.length>0){
-      setUploadText(files.length+" files to upload");  
-      setUploadbar("hasFiles");
     }else{
-      setUploadText("Upload");
-      setUploadbar("enabled");
     }
   },[files])
 
@@ -155,21 +151,6 @@ export default function Page({room}:{room:RoomProps}) {
         ):(
           <>
           <div className={Style.container}>
-            <form 
-            ref={formRef}
-            onChange={(e:SyntheticEvent)=>{
-                handleSubmit(e);
-            }}>
-              <label htmlFor="images" className={Style.inputCustom}>
-                Add new pictures
-              </label>
-              <input className={Style.fileinput} id="images" name="image" type="file" onChange={(e:SyntheticEvent)=>{
-                setFiles([...files,
-                  //@ts-ignore
-                  ...e.target.files]);
-              }} multiple/>
-
-            </form>
             <div className={Style.pictures}>
               {
                 pictures.map((picture,index)=>{
@@ -220,6 +201,21 @@ export default function Page({room}:{room:RoomProps}) {
               }
             />
           )}
+          <form 
+            ref={formRef}
+            onChange={(e:SyntheticEvent)=>{
+                handleSubmit(e);
+            }}>
+              
+            <label htmlFor="images" className={Style.float+" "+Style[uploadStatus]}>
+              <img src={"/"+uploadStatus+".svg"} alt="upload" />
+            </label>
+              <input className={Style.fileinput} id="images" name="image" type="file" onChange={(e:SyntheticEvent)=>{
+                setFiles([...files,
+                  //@ts-ignore
+                  ...e.target.files]);
+              }} multiple/>
+            </form>
           </>
         )
       }
