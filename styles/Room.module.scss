@@ -9,7 +9,13 @@
         flex-direction: column;
         justify-content: center;
         background: #e1e1e1;
+        margin:3px;
+        &:hover{
+            transition: all 0.5s;
+            box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+        }
     }
+    
 }
 .ref{
     display: block;
@@ -18,7 +24,7 @@
     height: 50px;
 }
 .main{
-    background:#c4d4de;
+    background:#95b0ca;
     top:0;
     left:0;
     width: 100%;
@@ -29,12 +35,15 @@
 }
 .inputCustom{
     display: inline-block;
-    width:100%;
-    padding:15px 20px;
+    width: 100%;
+    padding: 11px 20px;
     cursor:pointer;
     text-align: center;
-    background: #a6dac2;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
     margin-bottom: 5px;
+    font-family: -webkit-pictograph;
+    font-weight:600;
+    font-size:23px;
 }
 .fileinput{
     display: none;
