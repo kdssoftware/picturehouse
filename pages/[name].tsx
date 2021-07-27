@@ -126,8 +126,10 @@ export default function Page({room}:{room:RoomProps}) {
   )=>{
     if(photoIndex&&isOpen){
       // //next file downloading
+      //@ts-ignore
       axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
       // //prev file downloading
+      //@ts-ignore
       axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
     }
   },[isOpen,photoIndex]);
