@@ -33,43 +33,42 @@ export default function Page({room}:{room:RoomProps}) {
 
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
-    const formData = new FormData();
     //@ts-ignore
-    const files:any[] = event.target.images.files;
+    const files:any[] = event.target.files;
     if(files?.length<= 0){
       return;
     }
+    setUploadText("Uploading files...");  
+    setUploadbar("loading");
     for await (const file of files){
+      const formData = new FormData();
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
       }));
-    }
-    
-    setUploadText("Uploading files...");  
-    setUploadbar("loading");
-    axios.post("https://images.picturehouse.be/",formData,{
-    onUploadProgress: function(progressEvent) {
-      let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-      setProgress(percentCompleted);
-      console.log(percentCompleted+"%");
-    }}).then(async (response) => {
-      setFiles([]);
-      let urls = response.data;
-      setUploadText("Upload");  
-      setUploadbar("enabled");
-      await setPictures(
-        [
-          ...urls,
-          ...pictures
-        ]
-      );
-      for (const url of urls) {
-        axios({
-          method: "POST",
-          url:"/api/image/"+room.name+"/?url="+JSON.stringify(url)
+      axios.post("https://images.picturehouse.be/",formData,{
+        onUploadProgress: function(progressEvent) {
+          let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+          setProgress((progress-Math.round(100.0/files.length))+(percentCompleted/files.length));
+          console.log(progress,(progress-Math.round(100.0/files.length))+(percentCompleted/files.length));
+        }}).then(async (response) => {
+          let urls = response.data;
+          await setPictures(
+            [
+              ...urls,
+              ...pictures
+            ]
+          );
+          for (const url of urls) {
+            axios({
+              method: "POST",
+              url:"/api/image/"+room.name+"/?url="+JSON.stringify(url)
+            });
+          }
         });
-      }
-    });
+    }
+    setFiles([]);
+    setUploadText("Upload");  
+    setUploadbar("enabled");
   }
   
   const loadPictures = async () => {
@@ -92,12 +91,6 @@ export default function Page({room}:{room:RoomProps}) {
       throw new Error(e);
     }
   }
-  const toBase64 = (f:File) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(f);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-});
   useEffect(()=>{
     console.log(files);
     if(files.length>0){
@@ -143,7 +136,7 @@ export default function Page({room}:{room:RoomProps}) {
           <div className={Style.container}>
             <form 
             ref={formRef}
-            onSubmit={(e:SyntheticEvent)=>{
+            onChange={(e:SyntheticEvent)=>{
                 handleSubmit(e);
             }}>
               <label htmlFor="images" className={Style.inputCustom}>
@@ -158,7 +151,7 @@ export default function Page({room}:{room:RoomProps}) {
                 background:uploadbar==="loading"?"#6de237":"none",
                 width:uploadbar==="loading"?(progress)+"%":"100%",
               }}>
-                <button className={Style.submitButton+" "+Style[uploadbar]} type="submit" >{uploadText}</button>
+                <div className={Style.submitButton+" "+Style[uploadbar]}>{uploadText}</div>
               </div>
             </form>
             <div className={Style.pictures}>
@@ -166,9 +159,15 @@ export default function Page({room}:{room:RoomProps}) {
                 pictures.map((picture,index)=>{
                   return(
                     <div className={Style.pic} key={index}>
-                          <img
-                            src={picture.compressed}
-                          />
+                          <NextImage
+                            src={`https://images.picturehouse.be/cropped-${picture.file}`}
+                            blurDataURL={`https://images.picturehouse.be/blur-${picture.file}`}
+                            placeholder={"blur"}
+                            width={500}
+                            height={500}
+                          >
+
+                          </NextImage>
                     </div>
                     )
                   })
