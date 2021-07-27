@@ -2,11 +2,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import router from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.scss'
 import axios from 'axios';
 import Bg from "../components/bg";
 import Input from "../components/input";
+import BgStyle from "../styles/bg.module.scss";
 
 export default function Home() {
   const [room, setRoom] = useState('')
@@ -14,6 +15,11 @@ export default function Home() {
   const [mailInput,setMailInput] = useState('');
   const [gotoroomInput,setGotoroomInput] = useState('');
   const [gotoroomStatus,setGotoroomStatus] = useState('');
+  const [random,setRandom] = useState<Number>(1);
+
+  useEffect(()=>{
+    setRandom((Math.floor(Math.random() * 56) + 1));
+  },[])
 
   function validateEmail(mail:string){
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -21,7 +27,9 @@ export default function Home() {
   } 
   return (
     <>
-    <Bg />
+    <div className={BgStyle.bg}>
+    <img  src={"/bg/"+random+".svg"} alt="" />
+    </div>
     <div className={styles.logo}>
       <img  src="/logo.svg" alt="" />
     </div>
