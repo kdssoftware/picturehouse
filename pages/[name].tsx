@@ -147,12 +147,7 @@ export default function Page({room}:{room:RoomProps}) {
                   //@ts-ignore
                   ...e.target.files]);
               }} multiple/>
-              <div className={Style.progress} style={{
-                background:uploadbar==="loading"?"#6de237":"none",
-                width:uploadbar==="loading"?(progress)+"%":"100%",
-              }}>
-                <div className={Style.submitButton+" "+Style[uploadbar]}>{uploadText}</div>
-              </div>
+
             </form>
             <div className={Style.pictures}>
               {

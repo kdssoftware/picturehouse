@@ -1,7 +1,6 @@
 .pictures{  
     display: flex;
     flex-wrap: wrap;
-    padding: 5px;
     justify-content: space-evenly;
     .pic{
         margin: 1px;
@@ -9,7 +8,6 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        border: 3px solid #e1e1e1;
         background: #e1e1e1;
     }
 }
@@ -20,7 +18,7 @@
     height: 50px;
 }
 .main{
-    background:#345e7b;
+    background:#c4d4de;
     top:0;
     left:0;
     width: 100%;
@@ -30,13 +28,13 @@
     z-index: -100;
 }
 .inputCustom{
-    border: 1px solid #e1e1e1;
     display: inline-block;
     width:100%;
     padding:15px 20px;
     cursor:pointer;
     text-align: center;
-    background: #e1e1e1;
+    background: #a6dac2;
+    margin-bottom: 5px;
 }
 .fileinput{
     display: none;
@@ -67,10 +65,9 @@
 }
 .loadingPics{
     display:inline-block;
-    padding:6px 12px;
     cursor:pointer;
-    background: #223e52;
-    border: 1px solid #223e52;
+    background: #7692a7;
+    border: 1px solid #7692a7;
     width:100%;
     text-align: center;
 }
