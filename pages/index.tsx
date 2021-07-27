@@ -15,10 +15,10 @@ export default function Home() {
   const [mailInput,setMailInput] = useState('');
   const [gotoroomInput,setGotoroomInput] = useState('');
   const [gotoroomStatus,setGotoroomStatus] = useState('');
-  const [random,setRandom] = useState<Number>(1);
+  const [random,setRandom] = useState<Number>(0);
 
   useEffect(()=>{
-    setRandom((Math.floor(Math.random() * 56) + 1));
+    // setRandom((Math.floor(Math.random() * 56) + 1));
   },[])
 
   function validateEmail(mail:string){
