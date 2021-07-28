@@ -36,12 +36,17 @@ export default function Page({room}:{room:RoomProps}) {
   const [progress, setProgress] = useState(0);
   const [photoIndex,setPhotoIndex] = useState<number>(0);
   const [isOpen,setIsOpen] = useState<boolean>(false);
-
+  const [filesUploaded,setFilesUploaded] = useState(0);
+  const [filesToUpload,setFilesToUpload] = useState(0);
   const defaultSizeToLoadPictures = 12;
 
   useEffect(() => {
-    console.log(uploadStatus);
-  },[uploadStatus])
+    console.log("filesUploaded: "+filesUploaded);
+  },[filesUploaded])
+
+  useEffect(() => {
+    console.log("filesToUpload: "+filesToUpload);
+  },[filesToUpload])
 
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
@@ -50,11 +55,11 @@ export default function Page({room}:{room:RoomProps}) {
     if(files?.length<= 0){
       return;
     }
-    let filesToUpload = files.length;
-    let filesUploaded = 0;
+    // setFilesToUpload(files.length);
+    // setFilesUploaded(0);
     setUploadStatus("spin");
     let urlsToShow : any[]= [];
-    for (const file of files){
+    for await (const file of files){
       const formData = new FormData();
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
@@ -62,13 +67,21 @@ export default function Page({room}:{room:RoomProps}) {
       axios.post("https://images.picturehouse.be/",formData,{
         onUploadProgress: function(progressEvent) {
           let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-          console.log(percentCompleted);
         }}).then(async (response) => {
-          filesUploaded++;
+          console.log("uploaded 1 file")
+          // await setFilesUploaded(filesUploaded+1);
           let urls = response.data;
           urlsToShow.push(...urls);
-          if(filesUploaded == filesToUpload){
+          for (const url of urls) {
+            axios({
+              method: "POST",
+              url:"/api/image/"+room.name+"/?url="+JSON.stringify(url)
+            });
+          }
+          if(filesUploaded === filesToUpload){
             setFiles([]);
+            // setFilesUploaded(0);
+            // setFilesToUpload(0);
             setUploadStatus("plus");
             setHasMore(true);
             setPictures(
@@ -77,12 +90,6 @@ export default function Page({room}:{room:RoomProps}) {
                 ...pictures
               ]
             );
-          }
-          for (const url of urls) {
-            axios({
-              method: "POST",
-              url:"/api/image/"+room.name+"/?url="+JSON.stringify(url)
-            });
           }
         });
     }
@@ -207,12 +214,12 @@ export default function Page({room}:{room:RoomProps}) {
               }}
             />
           )}
+          <div className={Style.filesUploading+" "+(filesToUpload===0?Style.inactive:"")} >{`${filesUploaded}/${filesToUpload} files uploaded`}</div>
           <form 
             ref={formRef}
             onChange={(e:SyntheticEvent)=>{
                 handleSubmit(e);
             }}>
-              
             <label htmlFor="images" className={Style.float+" "+Style[uploadStatus]}>
               <img src={"/"+uploadStatus+".svg"} alt="upload" />
             </label>
