@@ -1,4 +1,4 @@
-# Picture House
+![Picture House](https://github.com/snakehead007/picturehouse/blob/master/public/logo.svg)
 
 ## Links
 Production: https://www.picturehouse.be/
@@ -16,13 +16,17 @@ Each person can get access a room.
 
 There all the pictures of the event can be viewed, easily be added or downloaded.
 
-## Limits and functionalities
+## Limitations
 
+Currently there are no limitations to a room of amount and size, you can also create as much rooms as you want.
+
+Future limitations:
 - Each room will have a maximum amount of 1000 pictures or 4GiB (whichever comes first)
-- There will be no limit to the amount of rooms created
+- 2 rooms per person
 - A room that is inactive after 1 month will be deleted
-- All pictures can be downloaded from a room in a zip-file 
-- A room can be password protected
+
+Current limitations:
+- 300 rooms can be created a day (due to the free mailing services) (will be replaced by Google login in the near future)
 
 ## Technical aspects
  - Using MongoDB as Database
@@ -34,14 +38,18 @@ There all the pictures of the event can be viewed, easily be added or downloaded
 - [x] password protect rooms
 - [x] upload images
 - [x] receive images
-- [ ] receive room owner rights with email when creating room
-- [ ] change password of room
-- [ ] unlock room, no password needed
+- [x] receive room owner rights with email when creating room
+- [x] change password of room
+- [x] unlock room, no password needed
+- [x] view images in room
+- [x] gallery scroll images in room
+- [x] pinch, zoom and scroll full sized images
 - [ ] remove room
-- [ ] view images in room
-- [ ] gallery scroll images in room
-- [ ] styling
+- [ ] Delete images
 - [ ] sort images by date
+- [ ] download images seperate
 - [ ] download images as zip file
+- [ ] login using Google and manage your room
+- [ ] Add limitations to rooms
 - [ ] add googledrive to upload unlimited pictures (limited by your Google drive)
-- [ ] add one drive to upload unlimitied pictures (limited by your OneDrive)
+- [ ] add one drive to upload unlimitied pictures (limited by your OneDrive) 
