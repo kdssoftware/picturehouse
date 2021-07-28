@@ -31,7 +31,10 @@ Current limitations:
 ## Technical aspects
  - Using MongoDB as Database
  - Using Next.js as web framework
- - deployed using vercel
+ - deployed using Vercel
+ - File uploading API server [picturehouse-images](https://github.com/snakehead007/picturehouse-images)
+ - NAS server for storage to place images
+ - Loadbalancing 20 API servers using Docker-compose and Haproxy using [these configs](https://github.com/snakehead007/loadbalancer)
 
 ### ToDo list
 - [x] create new rooms
