@@ -142,7 +142,6 @@ export default function Page({room}:{room:RoomProps}) {
   return (
     <>
     <div className={Style.main}></div>
-    {/* <img className={BgStyle.bg} src={"/bg.svg"} alt="" /> */}
       {
         room?
         <>
@@ -254,15 +253,3 @@ export async function getServerSideProps(ctx:any) {
     return {props:{room:null}}
   }
 }
-
-// //@ts-ignore
-// Page.getInitialProps = async (ctx:any)=>{
-//   let res;
-//   try{
-//     res = await axios.get('http://localhost:3000/api/room/'+ctx.query.name);
-//     https://img-9gag-fun.9cache.com/photo/apNj7z5_460svvp9.webm
-//     return {room:res.data};
-//   }catch(e){
-//     return {room:null}
-//   }
-// }

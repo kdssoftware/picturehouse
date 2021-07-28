@@ -8,6 +8,7 @@ export default function input ({
     onChange,
     onKeyUp,
     onKeyDown,
+    defaultValue
 }:{
     name:string,
     id:string
@@ -15,11 +16,11 @@ export default function input ({
     type:string,
     onChange?:Function,
     onKeyUp?:Function,
-    onKeyDown?:Function
-}){
+    onKeyDown?:Function,
+    defaultValue?: string | number | readonly string[] | undefined}){
     return(
         <div className={Style.form__group +" "+Style.field}>
-            <input type={type} className={Style.form__field} onChange={async(event)=>{
+            <input defaultValue={defaultValue} type={type} className={Style.form__field} onChange={async(event)=>{
                 if(onChange){
                     onChange(event);
                 }
