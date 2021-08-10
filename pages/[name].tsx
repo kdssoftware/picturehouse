@@ -160,18 +160,16 @@ export default function Page({room}:{room:RoomProps}) {
           </>
         ):(
           <>
-          <div className={Style.container}>
+          <div className={Style.pictureContainer}>
             <div className={Style.pictures}>
               {
                 pictures.map((picture,index)=>{
                   return(
-                    <div className={Style.pic} key={index}>
-                       {/* <div className={Style.inlineimg}> */}
-                         {/* <div className={Style.boxsizingimg}> */}
-                         <NextImage
+                    <div className={Style.pic} key={index} >
+                          <img
                             src={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/cropped-${picture.file}`}
                             placeholder={"blur"}
-                            blurDataURL={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/blur-${picture.file}`}
+                            // blurDataURL={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/blur-${picture.file}`}
                             width={500}
                             height={500}
                             onClick={()=>{
@@ -180,10 +178,9 @@ export default function Page({room}:{room:RoomProps}) {
                             }}
                           >
 
-                          </NextImage>
-                        {/* </div> */}
-                      {/* </div> */}
+                          </img>
                     </div>
+                         
                     
                     )
                   })
