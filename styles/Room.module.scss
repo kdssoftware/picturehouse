@@ -8,11 +8,11 @@
     margin: 0;
     
     .pic{
-        &:hover{
-            transition: all 0.5s;
-            // box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-            // box-shadow: rgb(104, 108, 112) 0px 20px 30px -10px;
-            box-shadow: rgba(140, 191, 240, 0.4) -5px 5px, rgba(147, 169, 241, 0.3) -10px 10px, rgba(168, 195, 231, 0.2) -15px 15px, rgba(186, 179, 230, 0.1) -20px 20px, rgba(196, 178, 236, 0.05) -25px 25px;
+        &:hover,&:focus{
+            transition: all 0.5s ease-in-out;
+            box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px, rgb(104, 108, 112) 0px 20px 30px -10px;
+            transform: matrix3d(1,0,0.00,0.00009,0.00,1,0.00,0.00015,0,0,1,0,0,0,0,1);
+            // box-shadow: rgba(140, 191, 240, 0.4) -5px 5px, rgba(147, 169, 241, 0.3) -10px 10px, rgba(168, 195, 231, 0.2) -15px 15px, rgba(186, 179, 230, 0.1) -20px 20px, rgba(196, 178, 236, 0.05) -25px 25px;
         }
         &.deleting{
             transition: all 0.5s;

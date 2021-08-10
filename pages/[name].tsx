@@ -40,13 +40,10 @@ export default function Page({room}:{room:RoomProps}) {
   const [filesToUpload,setFilesToUpload] = useState(0);
   const defaultSizeToLoadPictures = 12;
 
-  // useEffect(() => {
-  //   console.log("filesUploaded: "+filesUploaded);
-  // },[filesUploaded])
+  useEffect(() => {
+    console.log(pictures);
+  },[pictures])
 
-  // useEffect(() => {
-  //   console.log("filesToUpload: "+filesToUpload);
-  // },[filesToUpload])
 
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
@@ -117,12 +114,12 @@ export default function Page({room}:{room:RoomProps}) {
     }
   }
   
-  // useEffect(()=>{
-  //   if(isOpen){
-  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
-  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
-  //   }
-  // },[isOpen])
+  useEffect(()=>{
+    if(isOpen){
+      axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+      axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+    }
+  },[isOpen])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
@@ -138,9 +135,11 @@ export default function Page({room}:{room:RoomProps}) {
     }
   }
   
-  
   return (
     <>
+    <Head>
+      <title>{room.name}</title>
+    </Head>
     <div className={Style.main}></div>
       {
         room?
@@ -177,11 +176,8 @@ export default function Page({room}:{room:RoomProps}) {
                               setIsOpen(true);
                             }}
                           >
-
                           </img>
                     </div>
-                         
-                    
                     )
                   })
               }
@@ -213,7 +209,7 @@ export default function Page({room}:{room:RoomProps}) {
                 setPhotoIndex((photoIndex + 1) % pictures.length);
                 axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
               }}
-              imageTitle={(new Date(pictures[photoIndex].exif_tags.DateTimeOriginal*1000).toLocaleDateString())+" "+(new Date(pictures[photoIndex].exif_tags.DateTimeOriginal*1000).toLocaleTimeString())}
+              imageTitle={new Date(pictures[photoIndex].exif_tags.DateTimeOriginal*1000).toUTCString()}
             />
           )}
           <div className={Style.filesUploading+" "+(filesToUpload===0?Style.inactive:"")} >{`${filesUploaded}/${filesToUpload} files uploaded`}</div>
