@@ -197,6 +197,11 @@ export default function Page({room}:{room:RoomProps}) {
           </div>
           {isOpen && (
             <Lightbox
+              toolbarButtons={[(
+                <img style={{width:"25px",color:"white",
+                top: "9px",
+                position: "relative"}} src="/dl.svg" alt="" ></img>
+              )]}
               mainSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[photoIndex].file}
               nextSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
               prevSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
