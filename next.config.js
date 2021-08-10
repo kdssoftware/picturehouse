@@ -7,6 +7,6 @@ module.exports = {
   experiments:{
     topLevelAwait: true
   },images: {
-    domains: ['images.picturehouse.be'],
+    domains: ['images.picturehouse.be',"localhost"],
   },
 }

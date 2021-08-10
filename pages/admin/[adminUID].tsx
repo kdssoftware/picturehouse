@@ -126,14 +126,14 @@ export default function Page({room}:{room:RoomProps}) {
   
   useEffect(()=>{
     if(isOpen){
-      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
-      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+      axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+      axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
     }
   },[isOpen])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
-    try{
+    try{``
       await axios.post("/api/room/auth",{
         //@ts-ignore
         password:event.target.password.value,
@@ -204,8 +204,8 @@ export default function Page({room}:{room:RoomProps}) {
                     return(
                       <div className={Style.pic} key={index}>
                             <NextImage
-                              src={`https://images.picturehouse.be/cropped-${picture.file}`}
-                              blurDataURL={`https://images.picturehouse.be/blur-${picture.file}`}
+                              src={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/cropped-${picture.file}`}
+                              blurDataURL={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/blur-${picture.file}`}
                               placeholder={"blur"}
                               width={500}
                               height={500}
@@ -236,17 +236,17 @@ export default function Page({room}:{room:RoomProps}) {
             </div>
             {isOpen && (
               <Lightbox
-                mainSrc={"https://images.picturehouse.be/compressed-"+pictures[photoIndex].file}
-                nextSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
-                prevSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
+                mainSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[photoIndex].file}
+                nextSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
+                prevSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
                 onCloseRequest={() => setIsOpen( false)}
                 onMovePrevRequest={() =>{
                   setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length);
-                  axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+                  axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
                 }}
                 onMoveNextRequest={() =>{
                   setPhotoIndex((photoIndex + 1) % pictures.length);
-                  axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+                  axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
                 }}
               />
             )}

@@ -70,6 +70,7 @@ export const images_page = async (room:string,page_size:number,page_num:number) 
     const images =  await db.collection("images");
     // console.log(room,skips,page_size);
     const list = await images.aggregate([
+      { $sort: {'exif_tags.DateTimeOriginal': -1} },
       { $match: {room:room} },    // This is your query
       { $skip: skips },   // Always apply 'skip' before 'limit'
       { $limit: page_size }, // This is your 'page size'

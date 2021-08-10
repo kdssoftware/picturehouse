@@ -40,13 +40,13 @@ export default function Page({room}:{room:RoomProps}) {
   const [filesToUpload,setFilesToUpload] = useState(0);
   const defaultSizeToLoadPictures = 12;
 
-  useEffect(() => {
-    console.log("filesUploaded: "+filesUploaded);
-  },[filesUploaded])
+  // useEffect(() => {
+  //   console.log("filesUploaded: "+filesUploaded);
+  // },[filesUploaded])
 
-  useEffect(() => {
-    console.log("filesToUpload: "+filesToUpload);
-  },[filesToUpload])
+  // useEffect(() => {
+  //   console.log("filesToUpload: "+filesToUpload);
+  // },[filesToUpload])
 
   const handleSubmit = async (event:SyntheticEvent) => {
     event.preventDefault()
@@ -64,7 +64,7 @@ export default function Page({room}:{room:RoomProps}) {
       await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
         type: file.type,
       }));
-      axios.post("https://images.picturehouse.be/",formData,{
+      axios.post(process.env.NEXT_PUBLIC_IMAGES_HOST+"/",formData,{
         onUploadProgress: function(progressEvent) {
           let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
         }}).then(async (response) => {
@@ -117,12 +117,12 @@ export default function Page({room}:{room:RoomProps}) {
     }
   }
   
-  useEffect(()=>{
-    if(isOpen){
-      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
-      axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
-    }
-  },[isOpen])
+  // useEffect(()=>{
+  //   if(isOpen){
+  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+  //   }
+  // },[isOpen])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
@@ -166,10 +166,12 @@ export default function Page({room}:{room:RoomProps}) {
                 pictures.map((picture,index)=>{
                   return(
                     <div className={Style.pic} key={index}>
-                          <NextImage
-                            src={`https://images.picturehouse.be/cropped-${picture.file}`}
-                            blurDataURL={`https://images.picturehouse.be/blur-${picture.file}`}
+                       {/* <div className={Style.inlineimg}> */}
+                         {/* <div className={Style.boxsizingimg}> */}
+                         <NextImage
+                            src={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/cropped-${picture.file}`}
                             placeholder={"blur"}
+                            blurDataURL={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/blur-${picture.file}`}
                             width={500}
                             height={500}
                             onClick={()=>{
@@ -179,7 +181,10 @@ export default function Page({room}:{room:RoomProps}) {
                           >
 
                           </NextImage>
+                        {/* </div> */}
+                      {/* </div> */}
                     </div>
+                    
                     )
                   })
               }
@@ -199,18 +204,19 @@ export default function Page({room}:{room:RoomProps}) {
           </div>
           {isOpen && (
             <Lightbox
-              mainSrc={"https://images.picturehouse.be/compressed-"+pictures[photoIndex].file}
-              nextSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
-              prevSrc={"https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
+              mainSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[photoIndex].file}
+              nextSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file}
+              prevSrc={process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file}
               onCloseRequest={() => setIsOpen( false)}
               onMovePrevRequest={() =>{
                 setPhotoIndex((photoIndex + pictures.length - 1) % pictures.length);
-                axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+                axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
               }}
               onMoveNextRequest={() =>{
                 setPhotoIndex((photoIndex + 1) % pictures.length);
-                axios.get("https://images.picturehouse.be/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+                axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
               }}
+              imageTitle={(new Date(pictures[photoIndex].exif_tags.DateTimeOriginal*1000).toLocaleDateString())+" "+(new Date(pictures[photoIndex].exif_tags.DateTimeOriginal*1000).toLocaleTimeString())}
             />
           )}
           <div className={Style.filesUploading+" "+(filesToUpload===0?Style.inactive:"")} >{`${filesUploaded}/${filesToUpload} files uploaded`}</div>
@@ -226,7 +232,7 @@ export default function Page({room}:{room:RoomProps}) {
                 setFiles([...files,
                   //@ts-ignore
                   ...e.target.files]);
-              }} multiple/>
+              }} accept="image/png, image/jpeg, image/jpg" multiple/>
             </form>
           </>
         )
@@ -248,7 +254,7 @@ export async function getServerSideProps(ctx:any) {
     console.log("fetching room props "+ctx.query.name,process.env.NEXT_PUBLIC_HOST+'/api/room/'+ctx.query.name);
     res = await axios.get(process.env.NEXT_PUBLIC_HOST+'/api/room/'+ctx.query.name);
     console.log("room ",res.data);
-    return {props:{room:res.data}};
+    return {props:{room:res.data}}; 
   }catch(e){
     return {props:{room:null}}
   }
