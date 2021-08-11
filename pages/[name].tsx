@@ -114,12 +114,12 @@ export default function Page({room}:{room:RoomProps}) {
     }
   }
   
-  useEffect(()=>{
-    if(isOpen){
-      axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
-      axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
-    }
-  },[isOpen])
+  // useEffect(()=>{
+  //   if(isOpen){
+  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
+  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
+  //   }
+  // },[isOpen])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
