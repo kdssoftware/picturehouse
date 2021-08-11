@@ -104,6 +104,12 @@
     &.spin{
         background-color: #27831e;
     }
+    &.error{
+        background-color: #c70e0e;
+        img{
+            width:24px;
+        }
+    }
 }
 .lockForm{
     display: flex;

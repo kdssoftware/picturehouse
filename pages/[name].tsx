@@ -46,46 +46,50 @@ export default function Page({room}:{room:RoomProps}) {
 
 
   const handleSubmit = async (event:SyntheticEvent) => {
-    event.preventDefault()
-    //@ts-ignore
-    const files:any[] = event.target.files;
-    if(files?.length<= 0){
-      return;
-    }
-    // setFilesToUpload(files.length);
-    // setFilesUploaded(0);
-    setUploadStatus("spin");
-    let urlsToShow : any[]= [];
-    for await (const file of files){
-      const formData = new FormData();
-      await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
-        type: file.type,
-      }));
-      axios.post(process.env.NEXT_PUBLIC_IMAGES_HOST+"/",formData,{
-        onUploadProgress: function(progressEvent) {
-          let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-        }}).then(async (response) => {
-          console.log("uploaded 1 file")
-          // await setFilesUploaded(filesUploaded+1);
-          axios({
-            method: "POST",
-            url:"/api/image/"+room.name+"/?url="+JSON.stringify(response.data)
-          });
+    try{
+      event.preventDefault()
+      //@ts-ignore
+      const files:any[] = event.target.files;
+      if(files?.length<= 0){
+        return;
+      }
+      setUploadStatus("spin");
+      let urlsToShow : any[]= [];
+      for await (const file of files){
+        const formData = new FormData();
+        await formData.append(file.name,  new Blob([new Uint8Array(await file.arrayBuffer())], {
+          type: file.type,
+        }));
+        axios.post(process.env.NEXT_PUBLIC_IMAGES_HOST+"/",formData,{
+          onUploadProgress: function(progressEvent) {
+            let percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+          }}).then(async (response) => {
+            console.log("uploaded 1 file")
+            axios({
+              method: "POST",
+              url:"/api/image/"+room.name+"/?url="+JSON.stringify(response.data)
+            });
 
-          if(filesUploaded === filesToUpload){
-            setFiles([]);
-            // setFilesUploaded(0);
-            // setFilesToUpload(0);
-            setUploadStatus("plus");
-            setHasMore(true);
-            setPictures(
-              [
-                response.data,
-                ...pictures
-              ]
-            );
-          }
-        });
+            if(filesUploaded === filesToUpload){
+              setFiles([]);
+              setUploadStatus("plus");
+              setHasMore(true);
+              setPictures(
+                [
+                  response.data,
+                  ...pictures
+                ]
+              );
+            }
+          });
+      }
+    }catch(e){
+      console.log(e);
+      setUploadStatus("error");
+      //sleep function
+      setTimeout(()=>{  
+        setUploadStatus("plus");
+      },5000);
     }
   }
 
@@ -110,13 +114,6 @@ export default function Page({room}:{room:RoomProps}) {
       throw new Error(e);
     }
   }
-  
-  // useEffect(()=>{
-  //   if(isOpen){
-  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + pictures.length - 1) % pictures.length].file);
-  //     axios.get(process.env.NEXT_PUBLIC_IMAGES_HOST+"/compressed-"+pictures[(photoIndex + 1) % pictures.length].file);
-  //   }
-  // },[isOpen])
 
   const handlePasswordForm = async (event:SyntheticEvent) => {
     event.preventDefault();
