@@ -67,14 +67,11 @@ export default function Page({room}:{room:RoomProps}) {
         }}).then(async (response) => {
           console.log("uploaded 1 file")
           // await setFilesUploaded(filesUploaded+1);
-          let urls = response.data;
-          urlsToShow.push(...urls);
-          for (const url of urls) {
-            axios({
-              method: "POST",
-              url:"/api/image/"+room.name+"/?url="+JSON.stringify(url)
-            });
-          }
+          axios({
+            method: "POST",
+            url:"/api/image/"+room.name+"/?url="+JSON.stringify(response.data)
+          });
+
           if(filesUploaded === filesToUpload){
             setFiles([]);
             // setFilesUploaded(0);
@@ -83,7 +80,7 @@ export default function Page({room}:{room:RoomProps}) {
             setHasMore(true);
             setPictures(
               [
-                ...urlsToShow,
+                response.data,
                 ...pictures
               ]
             );
