@@ -254,6 +254,7 @@ export async function getServerSideProps(ctx:any) {
     console.log("room ",res.data);
     return {props:{room:res.data}}; 
   }catch(e){
+    console.trace(e);
     return {props:{room:null}}
   }
 }

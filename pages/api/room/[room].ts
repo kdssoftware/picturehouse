@@ -5,7 +5,10 @@ import {generatePassword,uuidv4} from "../../../utils/modeling";
 import mail from "../../../utils/mail";
 
 export default async (_: NextApiRequest, res: NextApiResponse) => {
-  const { db } = await connectToDatabase();
+  //@ts-ignore
+  const {db}= await connectToDatabase().catch(err=>{
+    console.log(err.message);
+  });
   const rooms = await db.collection("rooms");
   switch(_.method){
     case "PATCH":

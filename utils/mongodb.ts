@@ -1,4 +1,5 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient ,Db } from 'mongodb'
+
 const MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DB = process.env.MONGODB_DB
 
@@ -19,46 +20,24 @@ if (!MONGODB_DB) {
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-//@ts-ignore
-let cached = global.mongo
+
+let cached:any;
 
 if (!cached) {
-  //@ts-ignore
-  cached = global.mongo = { conn: null, promise: null }
+  cached= { conn: null, promise: null }
 }
 
-export async function connectToDatabase() {
-  if (cached.conn) {
-    return cached.conn
-  }
-
-  if (!cached.promise) {
-    const opts = {
+export async function connectToDatabase():Promise<{client:MongoClient,db:Db}> {
+    return await MongoClient.connect(String(process.env.MONGODB_URI), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    }
-    //@ts-ignore
-  try{
-    //@ts-ignore
-    cached.promise = MongoClient.connect(MONGODB_URI, opts).then((client) => {
+    }).then(async(client) => {
       return {
         client,
-        db: client.db(MONGODB_DB),
+        db: client.db(process.env.MONGODB_DB),
       }
     })
-  }catch(e){
-    console.log("MONGODB_URI connection error, trying MONGODB_URI_BACKUP");
-    //@ts-ignore
-    cached.promise = MongoClient.connect(MONGODB_URI_BACKUP, opts).then((client) => {
-      return {
-        client,
-        db: client.db(MONGODB_DB),
-      }
-    })
-  }
-  cached.conn = await cached.promise
-  return cached.conn
-}
+
 }
 
 export const images_page = async (room:string,page_size:number,page_num:number) => {
