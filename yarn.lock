@@ -2288,6 +2288,11 @@ react-refresh@0.8.3:
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.8.3.tgz"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
+react-simple-pull-to-refresh@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-simple-pull-to-refresh/-/react-simple-pull-to-refresh-1.2.3.tgz#e2fc67ba25e688c9866670e08c455ebc464f497f"
+  integrity sha512-GH4dJn3954IavyOg6rkF00LPqr2lG0DzLNGMhTYXDaOP5mjAduW3TCThexExS/sDWrRpN37IU8gzaimCvUse+w==
+
 react@17.0.2:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react/-/react-17.0.2.tgz"

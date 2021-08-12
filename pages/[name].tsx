@@ -18,6 +18,7 @@ import glassStyle from '../styles/Home.module.scss';
 import Input from "../components/input";
 import Bg from "../components/bg";
 import BgStyle from "../styles/bg.module.scss";
+import PullToRefresh from 'react-simple-pull-to-refresh';
 
 export default function Page({room}:{room:RoomProps}) {
   const formRef = useRef(null);
@@ -44,6 +45,15 @@ export default function Page({room}:{room:RoomProps}) {
     console.log(pictures);
   },[pictures])
 
+  const handleRefresh = async () => {
+    //remove all images and load all again
+    setPictures([]);
+    setPage(1);
+    setPhotoIndex(0);
+    setIsWaitForNextLoad(false);
+    setHasMore(true);
+
+  }
 
   const handleSubmit = async (event:SyntheticEvent) => {
     try{
@@ -153,13 +163,14 @@ export default function Page({room}:{room:RoomProps}) {
           </>
         ):(
           <>
+           <PullToRefresh onRefresh={handleRefresh}>
           <div className={Style.pictureContainer}>
             <div className={Style.pictures}>
               {
                 pictures.map((picture,index)=>{
                   return(
-                    <div className={Style.pic} key={index} >
                           <img
+                            key={index} 
                             src={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/cropped-${picture.file}`}
                             placeholder={"blur"}
                             // blurDataURL={`${process.env.NEXT_PUBLIC_IMAGES_HOST}/blur-${picture.file}`}
@@ -171,7 +182,6 @@ export default function Page({room}:{room:RoomProps}) {
                             }}
                           >
                           </img>
-                    </div>
                     )
                   })
               }
@@ -189,6 +199,8 @@ export default function Page({room}:{room:RoomProps}) {
                 }
             </div>
           </div>
+          </PullToRefresh>
+
           {isOpen && (
             <Lightbox
               toolbarButtons={[(
