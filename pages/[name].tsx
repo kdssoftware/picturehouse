@@ -91,6 +91,13 @@ export default function Page({room}:{room:RoomProps}) {
                 ]
               );
             }
+          }).catch(e => {
+            console.log(e);
+            setUploadStatus("error");
+            //sleep function
+            setTimeout(()=>{  
+              setUploadStatus("plus");
+            },7000);
           });
       }
     }catch(e){
@@ -99,7 +106,7 @@ export default function Page({room}:{room:RoomProps}) {
       //sleep function
       setTimeout(()=>{  
         setUploadStatus("plus");
-      },5000);
+      },7000);
     }
   }
 
@@ -142,7 +149,7 @@ export default function Page({room}:{room:RoomProps}) {
   return (
     <>
     <Head>
-      <title>{room.name}</title>
+      <title>{room?.name||"Room not found"}</title>
     </Head>
     <div className={Style.main}></div>
       {
@@ -260,7 +267,7 @@ export async function getServerSideProps(ctx:any) {
     console.log("room ",res.data);
     return {props:{room:res.data}}; 
   }catch(e){
-    console.trace(e);
+    // console.trace(e);
     return {props:{room:null}}
   }
 }
